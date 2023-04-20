@@ -17,8 +17,8 @@ module.exports.createAudio = async (req, res) => {
   });
 
   try {
-    const Audio = await newAudio.save();
-    return res.status(201).json({ message: "Audio crée", Audio });
+    await newAudio.save();
+    return res.status(201).json({ message: "Audio crée" });
   } catch (error) {
     return res.status(401).json({
       message: `Erreur interne du serveur ${error}`,
