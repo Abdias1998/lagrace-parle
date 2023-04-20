@@ -33,7 +33,7 @@ module.exports.readAudio = async (req, res) => {
     else
       return res.status(500).json({
         message:
-          "Erreur interne du serveur, vous pouvez pas récuperez les données",
+          "Erreur interne du serveur, vous pouvez pas récuperez les données d'audio",
       });
   }).sort({ createdAt: -1 });
 };
