@@ -6,12 +6,12 @@ const UserModel = require("../modeles/user");
 const ObjectId = require("mongoose").Types.ObjectId;
 // CREER UN POST
 module.exports.createPost = async (req, res) => {
-  const { posterId, emailPoster, video, message } = req.body;
+  const { posterId, emailPoster, message } = req.body;
   const newPost = new ExerciceModel({
     posterId,
     emailPoster,
     message,
-    video,
+
     likers: [],
     comments: [],
     picture:

@@ -10,9 +10,6 @@ const ExercicesSchema = new mongoose.Schema(
     picture: {
       type: String,
     },
-    video: {
-      type: String,
-    },
     emailPoster: {
       type: String,
       required: true,
