@@ -26,4 +26,8 @@ router.post(
   video_controler.ViewsMiddelware,
   video_controler.IncrementView
 );
+router.delete(
+  "/delete_video/:id",
+  video_controler.deleteVideo
+); /**Supprimez un audio */
 module.exports = router;

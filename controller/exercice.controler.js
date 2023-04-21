@@ -118,7 +118,7 @@ module.exports.deletePost = async (req, res) => {
     else
       return res.status(500).json({
         message:
-          "Vous pouvez pas supprimez ce utilisateur, veuilez réessayez plus tard",
+          "Vous pouvez pas supprimez ce post, veuilez réessayez plus tard",
       });
   });
 };

@@ -1,4 +1,7 @@
 const Audio = require("../modeles/audio");
+
+const mongoose = require("mongoose");
+const ObjectdId = mongoose.Types.ObjectId;
 /* global process */
 /**Créer un chant de Audio */
 
@@ -36,4 +39,21 @@ module.exports.readAudio = async (req, res) => {
           "Erreur interne du serveur, vous pouvez pas récuperez les données d'audio",
       });
   }).sort({ createdAt: -1 });
+};
+
+module.exports.deleteAudio = async (req, res) => {
+  const id = req.params.id;
+
+  if (!ObjectdId.isValid(id)) {
+    return res.status(400).send("Id Inconnue" + req.params.id);
+  }
+
+  Audio.findByIdAndRemove(id, (err, docs) => {
+    if (!err) res.send(docs);
+    else
+      return res.status(500).json({
+        message:
+          "Vous pouvez pas supprimez cet audio, veuilez réessayez plus tard",
+      });
+  });
 };

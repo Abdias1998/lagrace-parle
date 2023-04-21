@@ -13,7 +13,11 @@ const storages = multer.diskStorage({
   },
 });
 const uploads = multer({ storage: storages });
-router.get("/read", partition_controler.readAudio); /**Lire une partition */
+router.get("/read", partition_controler.readAudio); /**Lire les audios */
+router.delete(
+  "/delete_audio/:id",
+  partition_controler.deleteAudio
+); /**Supprimez un audio */
 router.post(
   "/create",
 

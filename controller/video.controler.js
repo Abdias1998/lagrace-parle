@@ -1,4 +1,7 @@
 const Video = require("../modeles/video");
+
+const mongoose = require("mongoose");
+const ObjectdId = mongoose.Types.ObjectId;
 /* global process */
 module.exports.createVideo = async (req, res) => {
   try {
@@ -67,4 +70,20 @@ module.exports.IncrementView = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+};
+module.exports.deleteVideo = async (req, res) => {
+  const id = req.params.id;
+
+  if (!ObjectdId.isValid(id)) {
+    return res.status(400).send("Id Inconnue" + req.params.id);
+  }
+
+  Video.findByIdAndRemove(id, (err, docs) => {
+    if (!err) res.send(docs);
+    else
+      return res.status(500).json({
+        message:
+          "Vous pouvez pas supprimez cette vidéo, veuilez réessayez plus tard",
+      });
+  });
 };
