@@ -62,7 +62,7 @@ app.get("/condition", function (req, res) {
 app.get("/partition", function (req, res) {
   res.sendFile(path.join(__dirname, "./client/build", "index.html"));
 });
-app.get("/partitions/:id", function (req, res) {
+app.get("/partition/:id", function (req, res) {
   res.sendFile(path.join(__dirname, "./client/build", "index.html"));
 });
 
@@ -181,7 +181,7 @@ app.get("/exercices/:filename", (req, res) => {
 app.get("/picture/:filename", (req, res) => {
   const filename = req.params.filename;
   // Récupérer le chemin complet de l'image
-  const imagePath = path.join(__dirname, "./exercices", filename);
+  const imagePath = path.join(__dirname, "./picture", filename);
   // Renvoyer l'image au client
   res.sendFile(imagePath);
 });
