@@ -62,7 +62,7 @@ app.get("/condition", function (req, res) {
 app.get("/partition", function (req, res) {
   res.sendFile(path.join(__dirname, "./client/build", "index.html"));
 });
-app.get("/partition/:id", function (req, res) {
+app.get("/partitions/:id", function (req, res) {
   res.sendFile(path.join(__dirname, "./client/build", "index.html"));
 });
 
