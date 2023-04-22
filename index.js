@@ -14,6 +14,7 @@ const AudioRoute = require("./routes/audio.routes");
 const VideoRoute = require("./routes/video.routes");
 const calendarRoute = require("./routes/calendar.routes");
 const ExerciceRoute = require("./routes/exercices.routes");
+const ImageRoute = require("./routes/images.routes");
 const rate_limiter = require("./utils/rate.limiter");
 const path = require("path");
 
@@ -25,12 +26,12 @@ const { default: helmet } = require("helmet");
 // Environnement variable
 const port = process.env.PORT;
 const origineClient = process.env.CLIENT_URL;
-
+const two8url = process.env.URL_AUTO;
 // app.use(cookieParser()); //Lire les cookies
 app.use(cookieParser());
 app.use(helmet());
 app.use(rate_limiter(100, 60000)); //Limiter les réquêtes abusées
-app.use(cors({ credentials: true, origin: origineClient })); //L'origine des requêtes
+app.use(cors({ credentials: true, origin: origineClient, two8url })); //L'origine des requêtes
 app.use(bodyParser.json()); //Transformer nos corps en json
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "./client/build")));
@@ -40,6 +41,9 @@ app.get("/", function (req, res) {
 });
 
 app.get("/register", function (req, res) {
+  res.sendFile(path.join(__dirname, "./client/build", "index.html"));
+});
+app.get("/img", function (req, res) {
   res.sendFile(path.join(__dirname, "./client/build", "index.html"));
 });
 app.get("/login", function (req, res) {
@@ -134,6 +138,7 @@ app.use(express.static(path.join(__dirname, "./partition")));
 app.use(express.static(path.join(__dirname, "./audio")));
 app.use(express.static(path.join(__dirname, "./video")));
 app.use(express.static(path.join(__dirname, "./exercices")));
+app.use(express.static(path.join(__dirname, "./picture")));
 
 //localhost:3000/image/user.png
 // Route pour servir une image
@@ -173,12 +178,20 @@ app.get("/exercices/:filename", (req, res) => {
   // Renvoyer l'image au client
   res.sendFile(imagePath);
 });
+app.get("/picture/:filename", (req, res) => {
+  const filename = req.params.filename;
+  // Récupérer le chemin complet de l'image
+  const imagePath = path.join(__dirname, "./exercices", filename);
+  // Renvoyer l'image au client
+  res.sendFile(imagePath);
+});
 
 app.use("/api/user", userRoute);
 app.use("/api/audio", AudioRoute);
 app.use("/api/video", VideoRoute);
 app.use("/api/calendar", calendarRoute);
 app.use("/api/exercices", ExerciceRoute);
+app.use("/api/picture", ImageRoute);
 
 app.listen(port || 7500, () =>
   console.log(`Le serveur est démarrer sur le port ${port}`)
