@@ -15,7 +15,7 @@ module.exports.createPost = async (req, res) => {
     picture:
       req.file !== null
         ? `${process.env.URL}/exercices/${req.file.originalname}`
-        : "",
+        : {},
   });
 
   try {
