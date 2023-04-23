@@ -12,8 +12,6 @@ module.exports.createPost = async (req, res) => {
     emailPoster,
     message,
 
-    likers: [],
-    comments: [],
     picture:
       req.file !== null
         ? `${process.env.URL}/exercices/${req.file.originalname}`

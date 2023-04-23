@@ -18,24 +18,6 @@ const ExercicesSchema = new mongoose.Schema(
 
     message: {
       type: String,
-      trim: true,
-    },
-
-    likers: {
-      type: [String],
-      required: true,
-    },
-
-    comments: {
-      type: [
-        {
-          commenterId: String,
-
-          text: String,
-          timestamp: Number,
-        },
-      ],
-      required: true,
     },
   },
   {
