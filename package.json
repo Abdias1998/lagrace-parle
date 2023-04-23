@@ -41,7 +41,6 @@
     "react-swipeable-views": "^0.14.0",
     "sanitize": "^2.1.2",
     "swiper": "^9.2.0",
-    "twilio": "^4.7.2",
     "validator": "^13.7.0"
   },
   "devDependencies": {
