@@ -2,21 +2,25 @@ const mongoose = require("mongoose");
 
 const ExercicesSchema = new mongoose.Schema(
   {
-    posterId: {
-      type: String,
-      required: true,
-    },
+    // posterId: {
+    //   type: String,
+    //   required: true,
+    // },
 
-    picture: {
-      type: String,
-    },
-    emailPoster: {
-      type: String,
-      required: true,
-      trim: true,
-    },
+    // picture: {
+    //   type: String,
+    // },
+
+    // emailPoster: {
+    //   type: String,
+    //   required: true,
+    //   trim: true,
+    // },
 
     message: {
+      type: String,
+    },
+    date: {
       type: String,
     },
   },

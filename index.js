@@ -171,13 +171,13 @@ app.get("/video/:filename", (req, res) => {
   // Renvoyer l'image au client
   res.sendFile(imagePath);
 });
-app.get("/exercices/:filename", (req, res) => {
-  const filename = req.params.filename;
-  // Récupérer le chemin complet de l'image
-  const imagePath = path.join(__dirname, "./exercices", filename);
-  // Renvoyer l'image au client
-  res.sendFile(imagePath);
-});
+// app.get("/exercices/:filename", (req, res) => {
+//   const filename = req.params.filename;
+//   // Récupérer le chemin complet de l'image
+//   const imagePath = path.join(__dirname, "./exercices", filename);
+//   // Renvoyer l'image au client
+//   res.sendFile(imagePath);
+// });
 app.get("/picture/:filename", (req, res) => {
   const filename = req.params.filename;
   // Récupérer le chemin complet de l'image

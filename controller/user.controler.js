@@ -456,6 +456,18 @@ module.exports.update_profil = async_handler(async (req, res) => {
     return res.status(403).json({ messsage: `L'identifiant n'existe pas` });
   /**Metrre à jour les informatio dans la base de donnéé */
   try {
+    user = await User.findOne({ $or: [{ email }, { tel }] });
+  } catch (error) {
+    return res.status(500).json({
+      message: `Erreur interne du serveur, veuillez réessayer plus tard ! `,
+    });
+  }
+  /**Si l'email est trouver, lui renvoyé une réponse 403 qu'il est déja pris */
+  if (user)
+    return res.status(403).json({
+      message: `L'utilisateur avec cet email ou numéro de téléphone existe déjà. Veuillez mettre un nouveau`,
+    });
+  try {
     User.findByIdAndUpdate(
       req.params.id,
       {
@@ -1048,6 +1060,7 @@ module.exports.sendPdfListe = async_handler(async (req, res) => {
           <tr style="background-color: #ECECEC; border-bottom: 1px solid #CCCCCC; text-align: center;">
       <th style="padding: 2px; border: 1px solid #CCCCCC;">Nom</th>
       <th style="padding: 2px; border: 1px solid #CCCCCC;">Prénom</th>
+      <th style="padding: 2px; border: 1px solid #CCCCCC;">Instrument</th>
       <th style="padding: 2px; border: 1px solid #CCCCCC;">Heure d'arrivé</th>
       <th style="padding: 2px; border: 1px solid #CCCCCC;">Statut</th>
     </tr>
@@ -1057,7 +1070,7 @@ module.exports.sendPdfListe = async_handler(async (req, res) => {
 
     users
       .filter((membre) => membre.isSuperAdmin === false)
-      .slice(0, 80)
+      // .slice(0, 80)
       .sort()
       .forEach((user) => {
         tableHTML += `
@@ -1067,6 +1080,9 @@ module.exports.sendPdfListe = async_handler(async (req, res) => {
         user.firstName
       }</td>
       <td style="padding: 2px; border: 1px solid #CCCCCC;">${user.lastName}</td>
+      <td style="padding: 2px; border: 1px solid #CCCCCC;">${
+        user.instrument
+      }</td>
       <td style="padding: 2px; border: 1px solid #CCCCCC;">${user.heure}</td>
       
       <td style="padding: 2px; border: 1px solid #CCCCCC;color:${
@@ -1138,7 +1154,7 @@ module.exports.sendPdfListeEvaluation = async_handler(async (req, res) => {
 
     users
       .filter((membre) => membre.isSuperAdmin === false)
-      .slice(0, 80)
+      // .slice(0, 80)
       .sort()
       .forEach((user) => {
         tableHTML += `

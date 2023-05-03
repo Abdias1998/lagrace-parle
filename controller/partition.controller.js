@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const ObjectdId = mongoose.Types.ObjectId;
 /**Créer un chant de partition */
 module.exports.createPartition = async (req, res) => {
-  const { title, auteur, gamme } = req.body;
+  const { title, auteur, gamme, categorie } = req.body;
   /**Vérifiez si le poster id est celle de l'administrateur si noon renvoyer une erreur 404  */
 
   /**Envoyer les données dans notre base de donnée */
@@ -14,6 +14,7 @@ module.exports.createPartition = async (req, res) => {
     title,
     auteur,
     gamme,
+    categorie,
 
     // partition: req.file !== null ? `../partition/${req.file.originalname}` : "",
     partition:

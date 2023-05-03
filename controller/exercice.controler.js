@@ -1,21 +1,32 @@
 const ExerciceModel = require("../modeles/exercices");
 const UserModel = require("../modeles/user");
-/* global process */
+
 // const { promisify } = require("util");
 
 const ObjectId = require("mongoose").Types.ObjectId;
 // CREER UN POST
 module.exports.createPost = async (req, res) => {
-  const { posterId, emailPoster, message } = req.body;
-  const newPost = new ExerciceModel({
-    posterId,
-    emailPoster,
-    message,
+  const { message } = req.body;
+  const date = new Date(); // crée un objet Date avec la date et l'heure actuelles
+  const jour = String(date.getDate()).padStart(2, "0"); // extrait le jour et ajoute un zéro devant si le nombre n'a qu'un seul chiffre
+  const mois = String(date.getMonth() + 1).padStart(2, "0"); // extrait le mois (en commençant par 0 pour janvier) et ajoute un zéro devant si le nombre n'a qu'un seul chiffre
+  const annee = date.getFullYear(); // extrait l'année
+  const heures = String(date.getHours()).padStart(2, "0"); // extrait les heures et ajoute un zéro devant si le nombre n'a qu'un seul chiffre
+  const minutes = String(date.getMinutes()).padStart(2, "0"); // extrait les minutes et ajoute un zéro devant si le nombre n'a qu'un seul chiffre
+  const secondes = String(date.getSeconds()).padStart(2, "0"); // extrait les secondes et ajoute un zéro devant si le nombre n'a qu'un seul chiffre
+  const dateFormatee = `${jour}/${mois}/${annee} ${heures}:${minutes}:${secondes}`; // combine les valeurs pour créer la chaîne de date et heure formatée
 
-    picture:
-      req.file !== null
-        ? `${process.env.URL}/exercices/${req.file.originalname}`
-        : {},
+  const newPost = new ExerciceModel({
+    // posterId,
+    // emailPoster,
+
+    message,
+    date: dateFormatee,
+
+    // picture:
+    //   req.file !== null
+    //     ? `${process.env.URL}/exercices/${req.file.originalname}`
+    //     : "",
   });
 
   try {
