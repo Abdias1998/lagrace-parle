@@ -10,8 +10,12 @@ const ImageSchema = mongoose.Schema({
     type: String,
   },
   category: {
-    required: true,
     type: String,
+    default: "All",
+  },
+  partition: {
+    type: String,
+    default: "All",
   },
 });
 

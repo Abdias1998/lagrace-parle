@@ -31,7 +31,7 @@ module.exports.createPost = async (req, res) => {
 
   try {
     await newPost.save();
-    return res.status(201).json({ message: "Exercice créer" });
+    return res.status(201).json({ message: "Communiquer créer" });
   } catch (error) {
     return res.status(401).send({
       message:

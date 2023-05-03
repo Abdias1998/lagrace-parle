@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 const ObjectdId = mongoose.Types.ObjectId;
 /**Créer un chant de partition */
 module.exports.createImage = async (req, res) => {
-  const { titre, category } = req.body;
+  const { titre, category, partition } = req.body;
   /**Vérifiez si le poster id est celle de l'administrateur si noon renvoyer une erreur 404  */
 
   /**Envoyer les données dans notre base de donnée */
@@ -15,7 +15,7 @@ module.exports.createImage = async (req, res) => {
     titre,
     category,
 
-    // partition: req.file !== null ? `../partition/${req.file.originalname}` : "",
+    partition,
     picture:
       req.file !== null
         ? `${process.env.URL}/picture/${req.file.originalname}`

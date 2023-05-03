@@ -456,7 +456,7 @@ module.exports.update_profil = async_handler(async (req, res) => {
     return res.status(403).json({ messsage: `L'identifiant n'existe pas` });
   /**Metrre à jour les informatio dans la base de donnéé */
   try {
-    user = await User.findOne({ $or: [{ email }, { tel }] });
+    user = await User.findOne({ email: email });
   } catch (error) {
     return res.status(500).json({
       message: `Erreur interne du serveur, veuillez réessayer plus tard ! `,
@@ -465,8 +465,13 @@ module.exports.update_profil = async_handler(async (req, res) => {
   /**Si l'email est trouver, lui renvoyé une réponse 403 qu'il est déja pris */
   if (user)
     return res.status(403).json({
-      message: `L'utilisateur avec cet email ou numéro de téléphone existe déjà. Veuillez mettre un nouveau`,
+      message: `L'utilisateur avec cet email. Veuillez mettre un nouveau email`,
     });
+
+  function emailExist() {
+    if (email) return email;
+    else return user.email;
+  }
   try {
     User.findByIdAndUpdate(
       req.params.id,
@@ -475,7 +480,7 @@ module.exports.update_profil = async_handler(async (req, res) => {
           firstName: firstName,
           lastName: setAllMajWords(true, lastName),
           tel: tel,
-          email: email,
+          email: emailExist(),
           names: `${firstName.toUpperCase()} ${setAllMajWords(true, lastName)}`,
         },
       },
