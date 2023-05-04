@@ -564,15 +564,15 @@ module.exports.logOut = async_handler(async (req, res) => {
       .json({ message: `Déconnexion échouée, veuillez réessayer plus tard` });
   }
   /**Vérifez si l'utilisateur est connecté avec le cookie stocké dans le navigateur */
-  jwt.verify(String(preventToken), process.env.TOKEN_SECRETE, (err, user) => {
+  jwt.verify(String(preventToken), process.env.TOKEN_SECRETE, (err) => {
     if (err) {
       return res
         .status(400)
         .json({ message: `Authentification échoué ${err}` });
     }
-    res.clearCookie(`${user.id}`);
+    res.clearCookie(`fanfare`);
     req.cookies = req.cookies || {};
-    req.cookies[`${user._id}`] = ``;
+    req.cookies[`fanfare`] = ``;
     /**Réponse finale */
     return res.status(200).json({ message: `Déconnexion` });
   });
