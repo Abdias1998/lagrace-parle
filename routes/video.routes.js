@@ -21,11 +21,7 @@ router.post(
   uploads.single("video"),
   video_controler.createVideo
 ); /**Créer une partition */
-router.post(
-  "/video/:id",
-  video_controler.ViewsMiddelware,
-  video_controler.IncrementView
-);
+router.post("/video/:id", video_controler.ViewsMiddelware);
 router.delete(
   "/delete_video/:id",
   video_controler.deleteVideo

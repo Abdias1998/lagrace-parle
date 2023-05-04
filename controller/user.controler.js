@@ -221,7 +221,7 @@ module.exports.register = async_handler(async (req, res) => {
       /**Réponse finale lorque tous se passe bien */
 
       return res.status(201).json({
-        message: `Nous venons d'envoyer votre code d'identification personnele à 4 chiffre à votre adresse mail que vous pouvez consulter`,
+        message: `Nous venons d'envoyer votre numéro d'identification personnele à 4 chiffre à votre adresse mail que vous pouvez consulter`,
       });
     });
   } catch (error) {
@@ -469,6 +469,10 @@ module.exports.update_profil = async_handler(async (req, res) => {
   //     message: `L'utilisateur avec cet email. Veuillez mettre un nouveau email`,
   //   });
 
+  function isExist() {
+    res.status(401).json({ message: `L'utilisateur avec cet email` });
+    return user.email;
+  }
   try {
     User.findByIdAndUpdate(
       req.params.id,
@@ -477,7 +481,7 @@ module.exports.update_profil = async_handler(async (req, res) => {
           firstName: firstName,
           lastName: setAllMajWords(true, lastName),
           tel: tel,
-          email: email !== user.email ? email : user.email,
+          email: email !== user.email ? email : isExist(),
           names: `${firstName.toUpperCase()} ${setAllMajWords(true, lastName)}`,
         },
       },

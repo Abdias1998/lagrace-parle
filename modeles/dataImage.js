@@ -11,12 +11,14 @@ const ImageSchema = mongoose.Schema(
       type: String,
     },
     category: {
+      required: true,
       type: String,
-      default: "All",
+      trim: true,
     },
     partition: {
+      required: true,
       type: String,
-      default: "All",
+      trim: true,
     },
   },
   {
