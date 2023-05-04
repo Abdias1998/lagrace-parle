@@ -47,7 +47,7 @@ module.exports.ViewsMiddelware = async (req, res, next) => {
     video.views++;
     video.viewedBy.push(userId);
     await video.save();
-    res.status(200).send("OK");
+    res.status(200).send("Views increment");
   } catch (error) {
     next(error);
   }
