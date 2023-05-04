@@ -5,10 +5,12 @@ const ImageSchema = mongoose.Schema(
     titre: {
       required: true,
       type: String,
+      trim: true,
     },
     picture: {
       required: true,
       type: String,
+      trim: true,
     },
     category: {
       required: true,
