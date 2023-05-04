@@ -429,7 +429,7 @@ module.exports.update_profil = async_handler(async (req, res) => {
   if (
     validator.isEmpty(firstName) ||
     validator.isEmpty(lastName) ||
-    validator.isEmpty(email) ||
+    // validator.isEmpty(email) ||
     validator.isEmpty(tel)
   )
     return res.status(401).json({
@@ -469,10 +469,10 @@ module.exports.update_profil = async_handler(async (req, res) => {
   //     message: `L'utilisateur avec cet email. Veuillez mettre un nouveau email`,
   //   });
 
-  function isExist() {
-    res.status(401).json({ message: `L'utilisateur avec cet email` });
-    return user.email;
-  }
+  // function isExist() {
+  //   res.status(401).json({ message: `L'utilisateur avec cet email` });
+  //   return user.email;
+  // }
   try {
     User.findByIdAndUpdate(
       req.params.id,
@@ -481,7 +481,7 @@ module.exports.update_profil = async_handler(async (req, res) => {
           firstName: firstName,
           lastName: setAllMajWords(true, lastName),
           tel: tel,
-          email: email !== user.email ? email : isExist(),
+          email: email,
           names: `${firstName.toUpperCase()} ${setAllMajWords(true, lastName)}`,
         },
       },
@@ -496,8 +496,8 @@ module.exports.update_profil = async_handler(async (req, res) => {
             docs /**Renvoyer l'user sans son mot de passe */,
           });
         else
-          return res.status(500).json({
-            message: `Erreur interne du serveur, veuillez réessayer plus tard !' ${err}`,
+          return res.status(401).json({
+            message: `L'utilisateur avec cet email existe déja, veuillez choisir un autre`,
           });
       }
     ).select(`-password`);
