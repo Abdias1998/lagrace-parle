@@ -104,7 +104,7 @@ router.put("/reset/:token", auth_controller.resetPassword);
 
 /**Déconnexion */
 
-router.post("/logout", auth_controller.logOut);
+router.post("/logout", middleware.verifyToken, auth_controller.logOut);
 
 /**Mettre à jour ses informations de profil */
 router.put(
@@ -118,10 +118,14 @@ router.delete("/delete/:id", auth_controller.deleteUser);
 
 /**Récuperer touts les utilisateurs */
 
-router.get("/", auth_controller.getAllUsers);
+router.get("/", middleware.verifyToken, auth_controller.getAllUsers);
 /**Récuperer les infos d'un utilisateur */
-router.get("/:id", auth_controller.userInfo);
-router.delete("/delete_partition/:id", partition_controller.deletePartition);
+router.get("/:id", middleware.verifyToken, auth_controller.userInfo);
+router.delete(
+  "/delete_partition/:id",
+  middleware.verifyToken,
+  partition_controller.deletePartition
+);
 
 /**Mettre à jour après avoir rèçu le pdf */
 router.put("/reset", auth_controller.onReset);
