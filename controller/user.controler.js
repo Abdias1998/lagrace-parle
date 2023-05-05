@@ -211,7 +211,7 @@ module.exports.register = async_handler(async (req, res) => {
 
           await sendEmail(
             user.email,
-            `Code numérique d'identification personnelle`,
+            `Numéro d'identification personnelle`,
             html
           );
         }
