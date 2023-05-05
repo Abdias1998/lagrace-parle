@@ -28,7 +28,7 @@ module.exports.createPartition = async (req, res) => {
     return res.status(201).json({ message: "partition crée" });
   } catch (error) {
     return res.status(401).json({
-      message: `Erreur interne du serveur ${error}`,
+      message: `Erreur interne du serveur, ${error}`,
     });
   }
 };
