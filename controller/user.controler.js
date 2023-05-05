@@ -551,9 +551,7 @@ module.exports.upload_profil = async_handler(async (req, res) => {
         setDefaultsOnInsert: true,
       }
     );
-    return res
-      .status(200)
-      .json({ message: "Profil mise à jour, raffraîchissez la page ! " });
+    return res.status(200).json({ message: "Profil mise à jour !" });
   } catch (error) {
     return res.status(500).json({
       message: `Erreur interne du serveur, veuillez réessayez plus tard ${error} !`,
