@@ -456,56 +456,63 @@ module.exports.update_profil = async_handler(async (req, res) => {
     return res.status(403).json({ messsage: `L'identifiant n'existe pas` });
 
   /**Metrre à jour les informatio dans la base de donnéé */
+  let userFind;
   try {
-    user = await User.findOne({ email: email });
+    userFind = await User.findOne({ email: email });
   } catch (error) {
     return res.status(500).json({
       message: `Erreur interne du serveur, veuillez réessayer plus tard ! `,
     });
   }
-  /**Si l'email est trouver, lui renvoyé une réponse 403 qu'il est déja pris */
-  // if (user)
-  //   return res.status(403).json({
-  //     message: `L'utilisateur avec cet email. Veuillez mettre un nouveau email`,
-  //   });
 
-  // function isExist() {
-  //   res.status(401).json({ message: `L'utilisateur avec cet email` });
-  //   return user.email;
-  // }
-  try {
-    User.findByIdAndUpdate(
-      req.params.id,
-      {
-        $set: {
-          firstName: firstName,
-          lastName: setAllMajWords(true, lastName),
-          tel: tel,
-          email: email,
-          names: `${firstName.toUpperCase()} ${setAllMajWords(true, lastName)}`,
+  /**Si l'email est trouver, lui renvoyé une réponse 403 qu'il est déja pris */
+  if (!userFind)
+    return res
+      .status(401)
+      .json({ message: `L'utilisateur avec cet émail existe déjà` });
+  let existingUser;
+  existingUser = await User.findOne({ email: email });
+  if (existingUser && existingUser._id.toString() !== req.params.id)
+    return res
+      .status(401)
+      .json({ message: `Cet émail est déjà utilisé par un utilisateur` });
+  else
+    try {
+      User.findByIdAndUpdate(
+        req.params.id,
+        {
+          $set: {
+            firstName: firstName,
+            lastName: setAllMajWords(true, lastName),
+            tel: tel,
+            email: email,
+            names: `${firstName.toUpperCase()} ${setAllMajWords(
+              true,
+              lastName
+            )}`,
+          },
         },
-      },
-      {
-        new: true,
-      },
-      (err, docs) => {
-        /**Réponse finale */
-        if (!err)
-          return res.status(200).json({
-            message: "Vos informations sont mises à jours",
-            docs /**Renvoyer l'user sans son mot de passe */,
-          });
-        else
-          return res.status(401).json({
-            message: `L'utilisateur avec cet email existe déja, veuillez choisir un autre`,
-          });
-      }
-    ).select(`-password`);
-  } catch (error) {
-    return res.status(500).json({
-      message: `Erreur interne du serveur, veuillez réessayer plus tard !' ${error}`,
-    });
-  }
+        {
+          new: true,
+        },
+        (err, docs) => {
+          /**Réponse finale */
+          if (!err)
+            return res.status(200).json({
+              message: "Vos informations sont mises à jours",
+              docs /**Renvoyer l'user sans son mot de passe */,
+            });
+          else
+            return res.status(401).json({
+              message: `L'utilisateur avec cet email existe déja, veuillez choisir un autre`,
+            });
+        }
+      ).select(`-password`);
+    } catch (error) {
+      return res.status(500).json({
+        message: `Erreur interne du serveur, veuillez réessayer plus tard !' ${error}`,
+      });
+    }
 });
 
 /*6...Changer le profil par défaut */
