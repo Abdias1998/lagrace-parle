@@ -1063,7 +1063,7 @@ module.exports.sendPdfListe = async_handler(async (req, res) => {
   try {
     const users = await User.find(
       {},
-      "firstName lastName heure status isSuperAdmin"
+      "firstName lastName instrument heure status isSuperAdmin"
     ); // Récupérer tous les utilisateurs avec leurs prénoms, noms, heures et statuts
 
     // Créer un tableau HTML pour afficher tous les utilisateurs avec leurs prénoms, noms, heures et statuts
@@ -1093,6 +1093,7 @@ module.exports.sendPdfListe = async_handler(async (req, res) => {
         user.firstName
       }</td>
       <td style="padding: 2px; border: 1px solid #CCCCCC;">${user.lastName}</td>
+
       <td style="padding: 2px; border: 1px solid #CCCCCC;">${
         user.instrument
       }</td>
