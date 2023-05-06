@@ -1130,7 +1130,7 @@ module.exports.sendPdfListe = async_handler(async (req, res) => {
 
     transporter.sendMail(mailOptions, (error) => {
       if (error) {
-        res.status(500).json({ mesage: error });
+        return res.status(500).json({ mesage: error });
       } else {
         res.json({
           message: "La liste de présence a été envoyé avec succès.",
@@ -1138,7 +1138,7 @@ module.exports.sendPdfListe = async_handler(async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).json({ message: error });
+    return res.status(500).json({ message: error });
   }
 });
 
@@ -1461,7 +1461,7 @@ module.exports.remeberEvenement = async_handler(async (req, res) => {
     });
   });
 
-  res
+  return res
     .status(200)
     .json({ message: "Rappels d'évènement envoyés avec succès !" });
 });
