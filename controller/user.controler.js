@@ -54,8 +54,8 @@ module.exports.register = async_handler(async (req, res) => {
   /*1 - Vérifiez maintenant si les données saisir respecte notre schéma de validation */
 
   if (
-    !validator.isLength(firstName, { min: 3, max: 20 }) ||
-    !validator.isLength(lastName, { min: 2, max: 35 })
+    !validator.isLength(firstName, { min: 3, max: 15 }) ||
+    !validator.isLength(lastName, { min: 2, max: 25 })
   )
     return res.status(401).json({
       message: `Vérifez bien la longeur du nom ou du prénom !`,
@@ -88,7 +88,7 @@ module.exports.register = async_handler(async (req, res) => {
   /**Permettre a notre user de metrtre un mot de passe sécurisé en le forçant à y mettre plus de 5  */
   if (!validator.isLength(password, { min: 5, max: 15 }))
     return res.status(401).json({
-      message: `Choisissez un mot de passe à 5 caractère minimum`,
+      message: `Choisissez un mot de passe à 5 caractère minimum et en dessous de 15 caractère maximum`,
     });
   /*2 - Verifiez maintenant s'il s'est déja inscrit, il cherchera l'email ou le numéro de téléphone lors de l'insertion dans la bd avec la méthode findOne de mongoose puisqu'il est unique par utulisateur. L'erreur sera recuperer dans le bloc catch*/
 
@@ -130,9 +130,16 @@ module.exports.register = async_handler(async (req, res) => {
 
   function isSanguinActive() {
     if (sanguin !== "")
-      return `Son groupe sanguin est ${sanguin}, veuillez contacter les numéros inscrits derrière la carte en cas de perte`;
+      return `<div>
+      <p>Son groupe sanguin est ${sanguin}</p>
+      <a href=${process.env.CLIENT_URL}> Consulter le site web</a>
+      <a tel:${process.env.TEL_PROPH}> Appeler ce numéros en cas de perte</a>
+      </div>`;
     else
-      return "Veuillez contacter les numéros inscrits derrière la carte en cas de perte";
+      return `<div>
+      <a href=${process.env.CLIENT_URL}> Consulter le site web</a>
+      <a tel:${process.env.TEL_PROPH}> Appeler ce numéros en cas de perte</a>
+      </div>`;
   }
   const data = `${IsManOrWife()} ${setAllMajWords(
     true,
@@ -377,7 +384,7 @@ module.exports.resetPassword = async_handler(async (req, res) => {
       return res.status(401).json({
         message: `Le champ mot de passe est vide`,
       });
-    if (!validator.isLength(newPass, { min: 5 }))
+    if (!validator.isLength(newPass, { min: 5, max: 15 }))
       return res.status(401).json({
         message: `Votre nouveau mot de passe doit contenir au moins 6 caractères`,
       });
@@ -429,7 +436,7 @@ module.exports.update_profil = async_handler(async (req, res) => {
   if (
     validator.isEmpty(firstName) ||
     validator.isEmpty(lastName) ||
-    // validator.isEmpty(email) ||
+    validator.isEmpty(email) ||
     validator.isEmpty(tel)
   )
     return res.status(401).json({
@@ -437,7 +444,7 @@ module.exports.update_profil = async_handler(async (req, res) => {
     });
   if (
     !validator.isLength(firstName, { min: 2, max: 15 }) ||
-    !validator.isLength(lastName, { min: 2, max: 35 })
+    !validator.isLength(lastName, { min: 2, max: 25 })
   )
     return res.status(401).json({
       message: `Vérifez si le nom ou prénom saisir est valide`,
@@ -466,7 +473,7 @@ module.exports.update_profil = async_handler(async (req, res) => {
   }
 
   /**Si l'email est trouver, lui renvoyé une réponse 403 qu'il est déja pris */
-  if (!userFind)
+  if (userFind)
     return res
       .status(401)
       .json({ message: `L'utilisateur avec cet émail existe déjà` });
@@ -649,8 +656,8 @@ module.exports.generatePdf = async_handler(async (req, res) => {
       );
 
     doc.end();
-    await sendPdf(user.email, `reglement.pdf`);
-    return res.status(200).json({ message: "Envoi du fichier réussir" });
+    await sendPdf(user.email, `règlement.pdf`);
+    return res.status(200).json({ message: "Envoi du fichier" });
   } catch (error) {
     return res.status(500).json({
       message: `Erreur interne du serveur, veuillez réessayer plus tard ${error}`,

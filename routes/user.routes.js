@@ -72,12 +72,7 @@ router.get(
 /**Vérifiez si son token est valide en renvoyant ses informations sans son mot de passse*/
 router.get("/jwt", middleware.verifyToken, middleware.getUser);
 /**Télécharger un fichier de profil */
-router.post(
-  "/upload",
-  upload.single("user"),
-
-  auth_controller.upload_profil
-);
+router.post("/upload", upload.single("user"), auth_controller.upload_profil);
 
 /**Faire la liste de présence toutls les lundis à partir de 17h00 à 19h30 */
 router.post("/liste/:userId", auth_controller.updateUserStatus);

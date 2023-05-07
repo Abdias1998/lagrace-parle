@@ -159,16 +159,16 @@ app.get("/partition/:filename", (req, res) => {
 });
 app.get("/audio/:filename", (req, res) => {
   const filename = req.params.filename;
-  // Récupérer le chemin complet de l'image
+  // Récupérer le chemin complet de l'audio
   const imagePath = path.join(__dirname, "./audio", filename);
-  // Renvoyer l'image au client
+  // Renvoyer l'audio au client
   res.sendFile(imagePath);
 });
 app.get("/video/:filename", (req, res) => {
   const filename = req.params.filename;
-  // Récupérer le chemin complet de l'image
+  // Récupérer le chemin complet de la vidéo
   const imagePath = path.join(__dirname, "./video", filename);
-  // Renvoyer l'image au client
+  // Renvoyer la vidéo au client
   res.sendFile(imagePath);
 });
 // app.get("/exercices/:filename", (req, res) => {
