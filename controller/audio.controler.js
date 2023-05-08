@@ -2,10 +2,12 @@ const Audio = require("../modeles/audio");
 
 const mongoose = require("mongoose");
 const ObjectdId = mongoose.Types.ObjectId;
+
+const async_handler = require(`express-async-handler`);
 /* global process */
 /**Créer un chant de Audio */
 
-module.exports.createAudio = async (req, res) => {
+module.exports.createAudio = async_handler(async (req, res) => {
   const { title } = req.body;
   /**Vérifiez si le poster id est celle de l'administrateur si noon renvoyer une erreur 404  */
 
@@ -27,10 +29,10 @@ module.exports.createAudio = async (req, res) => {
       message: `Erreur interne du serveur ${error}`,
     });
   }
-};
+});
 
 /**Récuperer touts les chants */
-module.exports.readAudio = async (req, res) => {
+module.exports.readAudio = async_handler(async (req, res) => {
   Audio.find((err, docs) => {
     if (!err) res.send(docs);
     else
@@ -39,9 +41,9 @@ module.exports.readAudio = async (req, res) => {
           "Erreur interne du serveur, vous pouvez pas récuperez les données d'audio",
       });
   }).sort({ createdAt: -1 });
-};
+});
 
-module.exports.deleteAudio = async (req, res) => {
+module.exports.deleteAudio = async_handler(async (req, res) => {
   const id = req.params.id;
 
   if (!ObjectdId.isValid(id)) {
@@ -56,4 +58,4 @@ module.exports.deleteAudio = async (req, res) => {
           "Vous pouvez pas supprimez cet audio, veuilez réessayez plus tard",
       });
   });
-};
+});

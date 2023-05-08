@@ -1,10 +1,13 @@
 const Partition = require("../modeles/partition");
+
+const async_handler = require(`express-async-handler`);
 /* global process */
 
 const mongoose = require("mongoose");
 const ObjectdId = mongoose.Types.ObjectId;
+
 /**Créer un chant de partition */
-module.exports.createPartition = async (req, res) => {
+module.exports.createPartition = async_handler(async (req, res) => {
   const { title, auteur, gamme, categorie } = req.body;
   /**Vérifiez si le poster id est celle de l'administrateur si noon renvoyer une erreur 404  */
 
@@ -31,10 +34,10 @@ module.exports.createPartition = async (req, res) => {
       message: `Erreur interne du serveur, ${error}`,
     });
   }
-};
+});
 
 /**Récuperer touts les chants */
-module.exports.readPartition = async (req, res) => {
+module.exports.readPartition = async_handler(async (req, res) => {
   Partition.find((err, docs) => {
     if (!err) res.send(docs);
     else
@@ -43,9 +46,9 @@ module.exports.readPartition = async (req, res) => {
           "Erreur interne du serveur, vous pouvez pas récuperez les données",
       });
   }).sort({ createdAt: -1 });
-};
+});
 
-module.exports.deletePartition = async (req, res) => {
+module.exports.deletePartition = async_handler(async (req, res) => {
   const id = req.params.id;
 
   if (!ObjectdId.isValid(id)) {
@@ -60,4 +63,4 @@ module.exports.deletePartition = async (req, res) => {
           "Vous pouvez pas supprimez cette partition, veuilez réessayez plus tard",
       });
   });
-};
+});

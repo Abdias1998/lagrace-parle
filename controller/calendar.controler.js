@@ -3,7 +3,9 @@ const User = require("../modeles/user");
 const mongoose = require("mongoose");
 const ObjectdId = mongoose.Types.ObjectId;
 
-module.exports.CreateCalendar = async (req, res) => {
+const async_handler = require(`express-async-handler`);
+
+module.exports.CreateCalendar = async_handler(async (req, res) => {
   try {
     const { title, start, end, location, description } = req.body;
 
@@ -27,8 +29,8 @@ module.exports.CreateCalendar = async (req, res) => {
       message: `Une erreur est survenue lors de la création de l'événement. ${error}`,
     });
   }
-};
-module.exports.updateCalendar = async (req, res) => {
+});
+module.exports.updateCalendar = async_handler(async (req, res) => {
   try {
     const { title, start, end, location, description } = req.body;
     const event = await Event.findById(req.params.id);
@@ -58,9 +60,9 @@ module.exports.updateCalendar = async (req, res) => {
       error: `Une erreur est survenue lors de la mise à jour de l'événement. ${error}`,
     });
   }
-};
+});
 
-module.exports.getCalendar = async (req, res) => {
+module.exports.getCalendar = async_handler(async (req, res) => {
   try {
     const events = await Event.find();
 
@@ -71,7 +73,7 @@ module.exports.getCalendar = async (req, res) => {
       error: `Une erreur est survenue lors de la récupération des événements. ${error}`,
     });
   }
-};
+});
 
 module.exports.AddEvent = async (req, res) => {
   if (!ObjectdId.isValid(req.params.id))

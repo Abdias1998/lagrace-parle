@@ -307,7 +307,6 @@ module.exports.login = async_handler(async (req, res) => {
       });
     });
 });
-
 /**3...Lancement du procédure du changement du mot de passe oublié */
 module.exports.forgetPassword = async_handler(async (req, res) => {
   const { email } = req.body;
@@ -463,20 +462,9 @@ module.exports.update_profil = async_handler(async (req, res) => {
     return res.status(403).json({ messsage: `L'identifiant n'existe pas` });
 
   /**Metrre à jour les informatio dans la base de donnéé */
-  let userFind;
-  try {
-    userFind = await User.findOne({ email: email });
-  } catch (error) {
-    return res.status(500).json({
-      message: `Erreur interne du serveur, veuillez réessayer plus tard ! `,
-    });
-  }
 
   /**Si l'email est trouver, lui renvoyé une réponse 403 qu'il est déja pris */
-  if (userFind)
-    return res
-      .status(401)
-      .json({ message: `L'utilisateur avec cet émail existe déjà` });
+
   let existingUser;
   existingUser = await User.findOne({ email: email });
   if (existingUser && existingUser._id.toString() !== req.params.id)
@@ -663,7 +651,7 @@ module.exports.generatePdf = async_handler(async (req, res) => {
       message: `Erreur interne du serveur, veuillez réessayer plus tard ${error}`,
     });
   }
-});
+}); //No unsed in the app web
 
 /**9...Supprimez un utilisateur du base de donnée */
 module.exports.deleteUser = async_handler(async (req, res) => {
@@ -754,7 +742,7 @@ module.exports.sendIdTransaction = async_handler(async (req, res) => {
         });
     }
   ).clone();
-});
+}); //No unsed in the app web
 
 /**12...Valider la transaction envoyer */
 module.exports.validateTransaction = async_handler(async (req, res) => {
@@ -944,7 +932,7 @@ module.exports.validateTransaction = async_handler(async (req, res) => {
       message: `Erreur interne du serveur, veuillez réessayez plus tard ${error}`,
     });
   }
-});
+}); //No unsed in the app web
 /**13...Recevoir son borderau de paiement s'il veut l'avoir sur la plateforme */
 module.exports.receiveTransaction = async_handler(async (req, res) => {
   /*Vérifiez si l'id passé est dans notre base de donné */
@@ -968,10 +956,10 @@ module.exports.receiveTransaction = async_handler(async (req, res) => {
       .status(500)
       .json({ message: "Erreur interne du serveur" + error });
   }
-});
+}); //No unsed in the app web
 
 /**14...Faire une liste de présence */
-module.exports.updateUserStatus = async (req, res) => {
+module.exports.updateUserStatus = async_handler(async (req, res) => {
   const now = new Date(); // Récupérez la date et l'heure actuelle
   function formatDate(date) {
     const day = date.getDate().toString().padStart(2, "0");
@@ -1037,7 +1025,7 @@ module.exports.updateUserStatus = async (req, res) => {
         "Les membres ne peuvent pas valider ler présence pour le moment. Veuillez commencer les lundis à partir de 17h00 à 20h30"
       );
   }
-};
+});
 
 /**15...Noter les membres lors des évaluations */
 module.exports.Evaluer = async_handler(async (req, res) => {
@@ -1337,7 +1325,7 @@ module.exports.souscrireUnMembre = async_handler(async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error });
   }
-});
+}); //No unsed in the app web
 /**Incrémneter à chaque payement */
 
 module.exports.payement = async_handler(async (req, res) => {
@@ -1357,7 +1345,7 @@ module.exports.payement = async_handler(async (req, res) => {
   } catch (error) {
     return res.status(500).json({ message: `Erreur interne du serveur` });
   }
-});
+}); //No unsed in the app web
 
 module.exports.validatePayement = async_handler(async (req, res) => {
   const { userId, value } = req.body;
@@ -1374,7 +1362,7 @@ module.exports.validatePayement = async_handler(async (req, res) => {
   } catch (error) {
     return res.status(500).json({ message: `Erreur interne du serveur` });
   }
-});
+}); //No unsed in the app web
 
 // L'information d'un seul utilisateurs
 module.exports.userInfo = async (req, res) => {
@@ -1472,4 +1460,4 @@ module.exports.remeberEvenement = async_handler(async (req, res) => {
   return res
     .status(200)
     .json({ message: "Rappels d'évènement envoyés avec succès !" });
-});
+}); //No unsed in the app web
