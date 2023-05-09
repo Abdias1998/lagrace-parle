@@ -23,7 +23,7 @@ module.exports.CreateCalendar = async_handler(async (req, res) => {
 
     return res
       .status(200)
-      .json({ message: "L'événement a été créé avec succès." });
+      .json({ message: `L'événement ${title} a été créé avec succès.` });
   } catch (error) {
     res.status(500).json({
       message: `Une erreur est survenue lors de la création de l'événement. ${error}`,

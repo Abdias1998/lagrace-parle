@@ -27,7 +27,11 @@ module.exports.createImage = async_handler(async (req, res) => {
 
   try {
     await newImage.save();
-    return res.status(201).json({ message: "image crée" });
+    return partition === "All"
+      ? res.status(201).json({ message: `L'image d'enssemble est envoyé` })
+      : res
+          .status(201)
+          .json({ message: `L'image des ${category}s est envoyé` });
   } catch (error) {
     return res.status(401).json({
       message: `Erreur interne du serveur ${error}`,

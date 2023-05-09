@@ -1187,7 +1187,8 @@ module.exports.sendPdfListeEvaluation = async_handler(async (req, res) => {
 
     const mailOptions = {
       from: `La Grâce Parle <${process.env.USER}>`,
-      to: process.env.ADMINPUPITRE,
+      // to: process.env.ADMINPUPITRE,
+      to: process.env.USER,
       subject:
         "Liste de l'évaluation des membres du groupe FanFare La Grâce Parle",
       html: tableHTML, // Ajouter le tableau HTML contenant tous les utilisateurs avec leurs prénoms, noms, heures et statuts dans le corps du message
@@ -1197,7 +1198,7 @@ module.exports.sendPdfListeEvaluation = async_handler(async (req, res) => {
       if (error) {
         res.status(500).json({ mesage: error });
       } else {
-        res.status(200).json({
+        return res.status(200).json({
           message:
             "Le fichier a bien été envoyer, vous pouvez l'imprimer maintenant",
         });

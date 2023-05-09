@@ -28,7 +28,15 @@ module.exports.createPartition = async_handler(async (req, res) => {
 
   try {
     await newPartition.save();
-    return res.status(201).json({ message: "partition crée" });
+    categorie === "All"
+      ? res
+          .status(201)
+          .json({
+            message: `La partition d'enssemble est envoyé au répertoire`,
+          })
+      : res.status(201).json({
+          message: `La partition des ${categorie}s est crée et est envoyé au répertoire`,
+        });
   } catch (error) {
     return res.status(401).json({
       message: `Erreur interne du serveur, ${error}`,

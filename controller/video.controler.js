@@ -21,7 +21,9 @@ module.exports.createVideo = async (req, res) => {
     // Enregistrer la vidéo dans la base de données
     await newVideo.save();
 
-    res.status(201).json({ message: "Video created successfully." });
+    return res
+      .status(201)
+      .json({ message: `La vidéo ${title} est envoyé au répertoire` });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server Error" });

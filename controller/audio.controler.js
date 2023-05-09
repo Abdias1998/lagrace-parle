@@ -23,7 +23,10 @@ module.exports.createAudio = async_handler(async (req, res) => {
 
   try {
     await newAudio.save();
-    return res.status(201).json({ message: "Audio crée" });
+
+    return res
+      .status(201)
+      .json({ message: `L'audio ${title} est envoyé au répertoire` });
   } catch (error) {
     return res.status(401).json({
       message: `Erreur interne du serveur ${error}`,
