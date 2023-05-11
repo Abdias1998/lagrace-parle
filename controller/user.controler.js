@@ -652,7 +652,7 @@ module.exports.generatePdf = async_handler(async (req, res) => {
       message: `Erreur interne du serveur, veuillez réessayer plus tard ${error}`,
     });
   }
-}); //No unsed in the app web
+});
 
 /**9...Supprimez un utilisateur du base de donnée */
 module.exports.deleteUser = async_handler(async (req, res) => {
@@ -1059,16 +1059,15 @@ module.exports.sendPdfListe = async_handler(async (req, res) => {
   try {
     const users = await User.find(
       {},
-      "firstName lastName instrument heure status isSuperAdmin"
+      "names lastName instrument heure status isSuperAdmin"
     ); // Récupérer tous les utilisateurs avec leurs prénoms, noms, heures et statuts
 
     // Créer un tableau HTML pour afficher tous les utilisateurs avec leurs prénoms, noms, heures et statuts
     let tableHTML = `
-      <table style="width: 210mm; border-collapse: collapse;">
+      <table style=" font-family: Arial, sans-serif; width: 210mm; border-collapse: collapse;">
         <thead>
           <tr style="background-color: #ECECEC; border-bottom: 1px solid #CCCCCC; text-align: center;">
-      <th style="padding: 2px; border: 1px solid #CCCCCC;">Nom</th>
-      <th style="padding: 2px; border: 1px solid #CCCCCC;">Prénom</th>
+      <th style="padding: 2px; border: 1px solid #CCCCCC;">Membre</th>
       <th style="padding: 2px; border: 1px solid #CCCCCC;">Instrument</th>
       <th style="padding: 2px; border: 1px solid #CCCCCC;">Heure d'arrivé</th>
       <th style="padding: 2px; border: 1px solid #CCCCCC;">Statut</th>
@@ -1085,11 +1084,7 @@ module.exports.sendPdfListe = async_handler(async (req, res) => {
         tableHTML += `
        <tbody>
     <tr style="border-bottom: 1px solid #CCCCCC;">
-      <td style="padding: 2px; border: 1px solid #CCCCCC;">${
-        user.firstName
-      }</td>
-      <td style="padding: 2px; border: 1px solid #CCCCCC;">${user.lastName}</td>
-
+      <td style="padding: 2px; border: 1px solid #CCCCCC;">${user.names}</td>
       <td style="padding: 2px; border: 1px solid #CCCCCC;">${
         user.instrument
       }</td>
@@ -1110,6 +1105,7 @@ module.exports.sendPdfListe = async_handler(async (req, res) => {
         </tbody>
       </table>
       <p>Date:${formatDate(now)} </p>
+      <p>Signature: </p>
     `;
     let user;
     user = await User.findOne({ _id: req.params.id });
