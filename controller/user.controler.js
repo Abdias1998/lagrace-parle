@@ -400,9 +400,10 @@ module.exports.resetPassword = async_handler(async (req, res) => {
       });
     /**Vérifez si le lien à expirer */
     if (user.resetPasswordExpires < Date.now()) {
-      return res
-        .status(403)
-        .json({ message: "Le lien de réinitialisation a expiré" });
+      return res.status(403).json({
+        message:
+          "Le lien de réinitialisation a expiré ou a déjà été cliquer,veuillez récommencez l'opération du changement du mot de passe",
+      });
     }
     /**Crypter le nouveau mot de passe en mettant à jour l'objet password, resetPasswordToken et resetPasswordExpires */
     const hashedPassword = bcrypt.hashSync(newPass, 10);
