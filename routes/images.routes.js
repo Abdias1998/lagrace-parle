@@ -12,13 +12,16 @@ const storages = multer.diskStorage({
     cb(null, `${file.originalname}`);
   },
 });
-const uploads = multer({ storage: storages });
-router.get("/read", image_controler.readImage); /**Lire une image*/
-router.delete("/:id", image_controler.deleteImage); /*Supprimer une image */
+const uploads = multer({
+  storage: storages,
+  limits: { fileSize: 7 * 1024 * 1024 },
+});
 router.post(
   "/create",
-  uploads.single("picture"),
+  uploads.array("pictures", 20),
   image_controler.createImage
 ); /**Créer une partition */
+router.get("/read", image_controler.readImage); /**Lire une image*/
+router.delete("/:id", image_controler.deleteImage); /*Supprimer une image */
 
 module.exports = router;

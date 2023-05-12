@@ -119,7 +119,7 @@ const userSchema = mongoose.Schema(
     },
     picture: {
       type: String,
-      default: "../image/user/user.png",
+      default: "./user.png",
     },
     payementId: {
       type: String,

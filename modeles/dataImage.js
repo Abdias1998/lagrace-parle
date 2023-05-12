@@ -3,29 +3,30 @@ const mongoose = require("mongoose");
 const ImageSchema = mongoose.Schema(
   {
     titre: {
-      required: true,
       type: String,
-      trim: true,
-    },
-    picture: {
       required: true,
-      type: String,
-      trim: true,
-    },
-    category: {
-      required: true,
-      type: String,
       trim: true,
     },
     partition: {
-      required: true,
       type: String,
+      required: true,
       trim: true,
     },
+    category: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    pictures: {
+      type: [
+        {
+          type: String,
+          required: true,
+        },
+      ],
+    },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
-module.exports = mongoose.model("image", ImageSchema);
+module.exports = mongoose.model("Image", ImageSchema);

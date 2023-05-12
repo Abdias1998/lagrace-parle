@@ -8,32 +8,65 @@ const mongoose = require("mongoose");
 const ObjectdId = mongoose.Types.ObjectId;
 /**Créer un chant de partition */
 
-module.exports.createImage = async_handler(async (req, res) => {
-  const { titre, category, partition } = req.body;
-  /**Vérifiez si le poster id est celle de l'administrateur si noon renvoyer une erreur 404  */
+// module.exports.createImage = async_handler(async (req, res) => {
+//   const { titre, category, partition } = req.body;
+//   /** Vérifier si le poster id est celui de l'administrateur. Si ce n'est pas le cas, renvoyer une erreur 404 */
 
-  /**Envoyer les données dans notre base de donnée */
+//   /** Envoyer les données dans notre base de données */
+
+//   const newImage = new Image({
+//     titre,
+//     category,
+//     partition,
+//     pictures: req.files.map(
+//       (file) => `${process.env.URL}/picture/${file.originalname}`
+//     ),
+//   });
+
+//   try {
+//     await newImage.save();
+//     let message =
+//       partition === "All"
+//         ? "L'image d'ensemble est envoyée"
+//         : `L'image des ${category}s est envoyée`;
+//     return res.status(201).json({ message });
+//   } catch (error) {
+//     return res.status(500).json({
+//       message: `Erreur interne du serveur ${error}`,
+//     });
+//   }
+// });
+
+const asyncHandler = require("express-async-handler");
+
+module.exports.createImage = asyncHandler(async (req, res) => {
+  const { titre, category, partition } = req.body;
+
+  /** Vérifier si le poster id est celui de l'administrateur. Si ce n'est pas le cas, renvoyer une erreur 404 */
+  // Ajoutez votre logique de vérification ici
+
+  const pictures = req.files?.map(
+    (file) => `${process.env.URL}/picture/${file.originalname}`
+  );
 
   const newImage = new Image({
     titre,
     category,
-
     partition,
-    picture:
-      req.file !== null
-        ? `${process.env.URL}/picture/${req.file.originalname}`
-        : "",
+    pictures,
   });
 
   try {
     await newImage.save();
-    return partition === "All"
-      ? res.status(201).json({ message: `L'image d'enssemble est envoyé` })
-      : res
-          .status(201)
-          .json({ message: `L'image des ${category}s est envoyé` });
+
+    let message =
+      partition === "All"
+        ? "L'image d'ensemble est envoyée"
+        : `L'image des ${category}s est envoyée`;
+
+    return res.status(201).json({ message });
   } catch (error) {
-    return res.status(401).json({
+    return res.status(500).json({
       message: `Erreur interne du serveur ${error}`,
     });
   }
