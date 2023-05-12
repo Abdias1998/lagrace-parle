@@ -351,8 +351,10 @@ module.exports.forgetPassword = async_handler(async (req, res) => {
         return res.status(401).json({ message: err });
       } else {
         const html = data
-          .replace(/{name}/g, existingUser.lastName)
-          .replace(/{reset_link}/g, url);
+          .replace(/{name}/g, existingUser.names)
+          .replace(/{reset_link}/g, url)
+          .replace(/{partition}/g, existingUser.partition)
+          .replace(/{instrument}/g, existingUser.partition);
 
         sendEmail(existingUser.email, `Réinitialisation de mot de passe`, html);
       }
@@ -369,7 +371,7 @@ module.exports.forgetPassword = async_handler(async (req, res) => {
     message: `Nous venons d'envoyer un lien du changement du mot de passe par e-mail à ${threeFirstWord.substr(
       0,
       8
-    )}*****@gmail.com. Vérifiez dans vos Spams si vous ne retrouvez par l'email, ce code expirera dans les 24h.
+    )}*****@gmail.com. Vérifiez dans vos Spams si vous ne retrouvez par l'email, ce lien expirera dans les 24h.
      `,
   });
 });
@@ -1324,8 +1326,8 @@ module.exports.souscrireUnMembre = async_handler(async (req, res) => {
     res.status(500).json({ message: error });
   }
 }); //No unsed in the app web
-/**Incrémneter à chaque payement */
 
+/**Incrémneter à chaque payement */
 module.exports.payement = async_handler(async (req, res) => {
   /**Payer les 500f chaque lundi ou dans la sémaine */
   const { idTransaction } = req.body;
