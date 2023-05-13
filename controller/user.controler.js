@@ -156,10 +156,7 @@ module.exports.register = async_handler(async (req, res) => {
         return res.status(500).json({
           message: "Erreur interne du serveur, veuillez réessayer plus tard",
         });
-      /**Vérifiez si l''email correspond a celle de l'admin pour lui permetttre d'avoir accès à certaine route */
-      function isAdmin() {
-        if (email === process.env.USER_SOPRANO) return true;
-      }
+
       function isAdminPupitre() {
         if (email === process.env.ADMINPUPITRE) return true;
       }
@@ -195,9 +192,8 @@ module.exports.register = async_handler(async (req, res) => {
         sanguin,
         password: hashedPassword,
         qrCode: url,
-        isAdmin:
-          isAdmin() /**Mettre à jours l'objet isAdmin si l'email est celle de userAdmin */,
-        isAdminPupitre: isAdminPupitre(),
+        isAdminPupitre:
+          isAdminPupitre() /**Mettre à jours l'objet isAdmin si l'email est celle de userAdmin */,
         isSuperAdmin: isSuperAdmin(),
         isAdminDev: isAdminDev(),
         souscription: "1",

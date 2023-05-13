@@ -131,6 +131,9 @@ app.get("/souscription", function (req, res) {
 app.get("/exercices", function (req, res) {
   res.sendFile(path.join(__dirname, "./client/build", "index.html"));
 });
+app.get("/delete/:token/:id", function (req, res) {
+  res.sendFile(path.join(__dirname, "./client/build", "index.html"));
+});
 // Définir le chemin du dossier "public"
 
 app.use(express.static(path.join(__dirname, "./image")));

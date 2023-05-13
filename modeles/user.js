@@ -104,10 +104,6 @@ const userSchema = mongoose.Schema(
       type: Date,
       default: "",
     },
-    isAdmin: {
-      type: Boolean,
-      default: false,
-    },
     sanguin: {
       type: String,
       trim: true,
