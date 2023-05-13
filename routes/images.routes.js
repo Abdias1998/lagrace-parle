@@ -18,7 +18,7 @@ const uploads = multer({
 });
 router.post(
   "/create",
-  uploads.array("pictures", 20),
+  uploads.array("pictures", 50),
   image_controler.createImage
 ); /**Créer une partition */
 router.get("/read", image_controler.readImage); /**Lire une image*/
