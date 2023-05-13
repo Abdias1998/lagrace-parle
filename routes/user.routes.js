@@ -90,12 +90,17 @@ router.post("/login", auth_controller.login);
 
 /**Procédure de changement du mot de passe */
 router.post("/forget", auth_controller.forgetPassword);
+router.post(
+  "/deleteUser/:id",
+  auth_controller.ReceiveNotificationDelectingUser
+);
 
 /**Souscrire un membre pour les 3 premier mois */
 router.post("/souscription/:id", auth_controller.souscrireUnMembre);
 
 /**Mettre un nouveau mot de passe */
 router.put("/reset/:token", auth_controller.resetPassword);
+// router.put("/reset/:delete", auth_controller.confirmDelete);
 
 /**Déconnexion */
 
@@ -109,7 +114,11 @@ router.put(
 );
 
 /**Suppromer un utilisateur de la base de donnée */
-router.delete("/delete/:id", auth_controller.deleteUser);
+router.delete(
+  "/delete/:token/:id",
+  auth_controller.confirmDelete,
+  auth_controller.deleteUser
+);
 
 /**Récuperer touts les utilisateurs */
 

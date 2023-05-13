@@ -1,13 +1,13 @@
 const mongoose = require("mongoose");
 // const mongoose_sanitize = require("mongoose-sanitize");
 const unique_validator = require("mongoose-unique-validator");
+
 const userSchema = mongoose.Schema(
   {
     firstName: {
       type: String,
       required: true,
       trim: true,
-      uppercase: true,
     },
     lastName: {
       type: String,
@@ -96,7 +96,11 @@ const userSchema = mongoose.Schema(
       type: String,
       default: "",
     },
-    resetPasswordExpires: {
+    deleteUserToken: {
+      type: String,
+      default: "",
+    },
+    deleteUserExpires: {
       type: Date,
       default: "",
     },

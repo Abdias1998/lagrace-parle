@@ -177,12 +177,12 @@ module.exports.register = async_handler(async (req, res) => {
       }
       /**Enregister user dans la base de donnée */
       const user = await new User({
-        firstName,
+        firstName: setAllMajWords(true, firstName),
         lastName: setAllMajWords(
           true,
           lastName
         ) /**Mettre en majuscule(capitalise) touts nos premiers lettre ex: Abdias Mahougnon Emmanuel */,
-        names: `${firstName.toUpperCase()} ${setAllMajWords(
+        names: `${setAllMajWords(true, firstName)} ${setAllMajWords(
           true,
           lastName
         )}` /**Mettre le nom en uppercase et le prénom en capitalize  */,
@@ -354,7 +354,7 @@ module.exports.forgetPassword = async_handler(async (req, res) => {
           .replace(/{name}/g, existingUser.names)
           .replace(/{reset_link}/g, url)
           .replace(/{partition}/g, existingUser.partition)
-          .replace(/{instrument}/g, existingUser.partition);
+          .replace(/{instrument}/g, existingUser.instrument);
 
         sendEmail(existingUser.email, `Réinitialisation de mot de passe`, html);
       }
@@ -1461,3 +1461,86 @@ module.exports.remeberEvenement = async_handler(async (req, res) => {
     .status(200)
     .json({ message: "Rappels d'évènement envoyés avec succès !" });
 }); //No unsed in the app web
+
+module.exports.ReceiveNotificationDelectingUser = async_handler(
+  async (req, res) => {
+    let exisntingUser;
+    try {
+      exisntingUser = await User.findOne({ _id: req.params.id });
+      if (exisntingUser) {
+        const deleteUser = jwt.sign(
+          { _id: exisntingUser._id },
+          process.env.FORGET_PASSWORD_KEY,
+          {
+            expiresIn: 3600 * 24, // Expire après 24h
+          }
+        );
+        /**Mettre à jour l'objet resetPasswordToken et resetPasswordExpires */
+        await exisntingUser.updateOne({
+          deleteUserToken: deleteUser,
+          deleteUserExpires: Date.now() + 3600000 * 24, // Expire après 24h
+        });
+
+        /**L'url à envoyer dans l'email */
+        const url = `${process.env.CLIENT_URL}/delete/${deleteUser}/${exisntingUser._id}`;
+        /**Template html pour l'envoi du code à l"email de l'user */
+        fs.readFile("./template/delete.html", "utf-8", async (err, data) => {
+          if (err) {
+            return res.status(401).json({ message: err });
+          } else {
+            const html = data
+              .replace(
+                /{name}/g,
+                exisntingUser.names
+              ) /**Remplacer dynamiquement firstName qui se trouve dans register.html */
+              .replace(/{code}/g, exisntingUser.identification)
+              .replace(/{reset_link}/g, url);
+
+            await sendEmail(
+              process.env.USER,
+              `Suppression d'un utilisateur`,
+              html
+            );
+          }
+        });
+
+        return res.status(200).json({
+          message: `Démande de suppression en cours de traitement......`,
+        });
+      } else return res.status(401).json({ message: `Démande non exécuté` });
+    } catch (error) {
+      return res.status(500).json({
+        message: `Erreur interne du serveur,veuillez réessayez plus tard`,
+      });
+    }
+  }
+);
+
+module.exports.confirmDelete = async_handler(async (req, res, next) => {
+  /**Verifie si le token est celle que nous avons générer avec un key forget_password_key  */
+  const decoded = jwt.verify(req.params.token, process.env.FORGET_PASSWORD_KEY);
+  try {
+    const user = await User.findById(decoded._id);
+    if (!user)
+      return res.status(403).json({
+        message: `Authentification échoué, veuillez récommencez l'opération de suppression de l'user.
+`,
+      });
+    /**Vérifez si le lien à expirer */
+    if (user.deleteUserExpires < Date.now()) {
+      return res.status(403).json({
+        message:
+          "Le lien de réinitialisation a expiré ou a déjà été cliquer,veuillez récommencez l'opération de suppression",
+      });
+    }
+    await user.updateOne({
+      deleteUserToken: ``,
+      deleteUserExpires: ``,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: `Erreur intere du serveur ${error}` });
+  }
+  next();
+});
