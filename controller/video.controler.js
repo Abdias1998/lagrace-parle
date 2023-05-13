@@ -30,30 +30,30 @@ module.exports.createVideo = async (req, res) => {
   }
 };
 module.exports.readVideo = async (req, res) => {
-  try {
-    const videos = await Video.find().sort({ createdAt: -1 });
-    res.json(videos);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
+  Video.find((err, docs) => {
+    if (!err) res.send(docs);
+    else
+      return res.status(500).json({
+        message:
+          "Erreur interne du serveur, vous pouvez pas récuperez les données des vidéos",
+      });
+  }).sort({ createdAt: -1 });
 };
 module.exports.ViewsMiddelware = async (req, res, next) => {
+  const { user } = req.body;
   try {
     const video = await Video.findById(req.params.id);
     if (!video) {
       return res.status(404).json({ message: "Video not found" });
     }
-    if (video.viewedBy.includes(req.params.user)) {
+    if (video.viewedBy?.includes(user)) {
       // L'utilisateur a déjà visionné la vidéo, ne rien faire
-      return res
-        .status(200)
-        .send("L'utilisateur a déjà visionné la vidéo, ne rien faire");
     }
     // L'utilisateur n'a pas encore visionné la vidéo, incrémenter le nombre de vues et ajouter l'utilisateur à la liste des utilisateurs ayant visionné la vidéo
     video.views++;
-    video.viewedBy.push(req.params.user);
+    video.viewedBy?.push(user);
     await video.save();
-    return res.status(200).json({ message: "Views increment" });
+    // return res.status(200).json({ message: "Views increment" });
   } catch (error) {
     next(error);
   }
