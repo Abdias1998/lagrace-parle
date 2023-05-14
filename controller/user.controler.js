@@ -147,7 +147,7 @@ module.exports.register = async_handler(async (req, res) => {
   )} ${setAllMajWords(
     true,
     lastName
-  )} est membre du groupe fanfare la grâce parle, il joue au ${instrument}. ${isSanguinActive()}
+  )} est membre du groupe Philharmonia La Grâce Parle, il joue au ${instrument}. ${isSanguinActive()}
  `;
   /**Générer un code qr */
   try {
@@ -1115,7 +1115,7 @@ module.exports.sendPdfListe = async_handler(async (req, res) => {
       from: `La Grâce Parle <${process.env.USER}>`,
       to: user.email,
       subject:
-        "Liste de présence des utilisateurs de l'application Fanfare LGP",
+        "Liste de présence des utilisateurs de l'application Philharmonia La Grâce Parle",
       html: tableHTML, // Ajouter le tableau HTML contenant tous les utilisateurs avec leurs prénoms, noms, heures et statuts dans le corps du message
     };
 
@@ -1185,7 +1185,7 @@ module.exports.sendPdfListeEvaluation = async_handler(async (req, res) => {
       // to: process.env.ADMINPUPITRE,
       to: process.env.USER,
       subject:
-        "Liste de l'évaluation des membres du groupe FanFare La Grâce Parle",
+        "Liste de l'évaluation des membres du groupe Philharmonia La Grâce Parle",
       html: tableHTML, // Ajouter le tableau HTML contenant tous les utilisateurs avec leurs prénoms, noms, heures et statuts dans le corps du message
     };
 
@@ -1307,7 +1307,7 @@ module.exports.souscrireUnMembre = async_handler(async (req, res) => {
     // Ajout des informations du client
 
     doc.text(
-      `750 f payé par ${user.names} pour sa souscription sur l'application fanfare`,
+      `750 f payé par ${user.names} pour sa souscription sur l'application Philharmonia La Grâce Parle`,
       { align: "center" }
     );
     // Finalisation du document PDF
