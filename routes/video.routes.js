@@ -14,6 +14,7 @@ const storages = multer.diskStorage({
   },
 });
 const uploads = multer({ storage: storages });
+router.put("/views/:id", video_controler.ViewsMiddelware);
 router.get("/read", video_controler.readVideo); /**Lire une partition */
 router.post(
   "/create",
@@ -21,7 +22,6 @@ router.post(
   uploads.single("video"),
   video_controler.createVideo
 ); /**Créer une partition */
-router.put("/views/:id", video_controler.ViewsMiddelware);
 router.delete(
   "/delete_video/:id",
   video_controler.deleteVideo

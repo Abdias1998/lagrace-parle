@@ -42,41 +42,24 @@ module.exports.readVideo = async (req, res) => {
 module.exports.ViewsMiddelware = async (req, res, next) => {
   const { user } = req.body;
   try {
-    const video = await Video.findById(req.params.id);
+    const video = await Video.findById({ _id: req.params.id });
     if (!video) {
       return res.status(404).json({ message: "Video not found" });
     }
     if (video.viewedBy?.includes(user)) {
       // L'utilisateur a déjà visionné la vidéo, ne rien faire
+      res.send("Video views");
     }
     // L'utilisateur n'a pas encore visionné la vidéo, incrémenter le nombre de vues et ajouter l'utilisateur à la liste des utilisateurs ayant visionné la vidéo
     video.views++;
     video.viewedBy?.push(user);
     await video.save();
-    // return res.status(200).json({ message: "Views increment" });
+    return res.send("Video view");
   } catch (error) {
     next(error);
   }
 };
 
-module.exports.IncrementView = async (req, res, next) => {
-  try {
-    const video = await Video.findById(req.params.id);
-    if (!video) {
-      return res.status(404).json({ message: "Video not found" });
-    }
-
-    // Incrémenter le nombre de vues
-    video.views++;
-    await video.save();
-
-    return res.status(200).json({
-      message: "Views increment",
-    });
-  } catch (err) {
-    next(err);
-  }
-};
 module.exports.deleteVideo = async (req, res) => {
   const id = req.params.id;
 
