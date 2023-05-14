@@ -65,6 +65,9 @@ app.get("/partition", function (req, res) {
 app.get("/partitions/:id", function (req, res) {
   res.sendFile(path.join(__dirname, "./client/build", "index.html"));
 });
+app.get("/images/:id", function (req, res) {
+  res.sendFile(path.join(__dirname, "./client/build", "index.html"));
+});
 
 //localhost:7200/partition/partition/christ-est-reussucite.jpeg
 // app.get("/image/:id", function (req, res) {

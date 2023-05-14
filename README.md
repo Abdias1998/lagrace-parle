@@ -36,3 +36,9 @@ Faire un border pour les images pour les remarquer
 A ne pas oublier
 Remplaxer le le mail pour recevoir la liste dévaluation
 Enlever le console dans middlevu de vidéo
+
+/\*\*\*/
+-Mettre un logo de messenger
+-Quand il click sur le logo, afficher une barre de recherche
+
+- Il voit
