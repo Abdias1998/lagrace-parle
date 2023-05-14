@@ -29,13 +29,11 @@ module.exports.createPartition = async_handler(async (req, res) => {
   try {
     await newPartition.save();
     categorie === "All"
-      ? res
-          .status(201)
-          .json({
-            message: `La partition d'enssemble est envoyé au répertoire`,
-          })
+      ? res.status(201).json({
+          message: `L'image d'enssemble est envoyé à chaque partition`,
+        })
       : res.status(201).json({
-          message: `La partition des ${categorie}s est crée et est envoyé au répertoire`,
+          message: `Seule la partition des ${categorie}s est crée et envoyé au répertoire`,
         });
   } catch (error) {
     return res.status(401).json({
