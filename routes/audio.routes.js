@@ -5,7 +5,6 @@ const multer = require("multer");
 
 const storages = multer.diskStorage({
   destination: (req, file, cb) => {
-    // cb(null, "./client/build/audio");
     cb(null, "./audio");
   },
   filename: (req, file, cb) => {
