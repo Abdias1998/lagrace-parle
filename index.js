@@ -26,12 +26,12 @@ const { default: helmet } = require("helmet");
 // Environnement variable
 const port = process.env.PORT;
 const origineClient = process.env.CLIENT_URL;
-const two8url = process.env.URL_AUTO;
+
 // app.use(cookieParser()); //Lire les cookies
 app.use(cookieParser());
 app.use(helmet());
 app.use(rate_limiter(100, 60000)); //Limiter les réquêtes abusées
-app.use(cors({ credentials: true, origin: origineClient, two8url })); //L'origine des requêtes
+app.use(cors({ credentials: true, origin: origineClient })); //L'origine des requêtes
 app.use(bodyParser.json()); //Transformer nos corps en json
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "./client/build")));
@@ -65,7 +65,7 @@ app.get("/partition", function (req, res) {
 app.get("/partitions/:id", function (req, res) {
   res.sendFile(path.join(__dirname, "./client/build", "index.html"));
 });
-app.get("/images/:id", function (req, res) {
+app.get("/images/:token/:id", function (req, res) {
   res.sendFile(path.join(__dirname, "./client/build", "index.html"));
 });
 
