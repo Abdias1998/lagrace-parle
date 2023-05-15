@@ -51,14 +51,24 @@ module.exports.register = async_handler(async (req, res) => {
     email,
     sexe,
   } = req.body;
+
   /*1 - Vérifiez maintenant si les données saisir respecte notre schéma de validation */
 
-  if (
-    !validator.isLength(firstName, { min: 3, max: 15 }) ||
-    !validator.isLength(lastName, { min: 2, max: 25 })
-  )
+  if (!validator.isLength(firstName, { min: 2 }))
     return res.status(401).json({
-      message: `Vérifez bien la longeur du nom ou du prénom !`,
+      message: `Le texte du nom de famille est trop pétit`,
+    });
+  if (!validator.isLength(firstName, { max: 15 }))
+    return res.status(401).json({
+      message: `Le texte du nom de famille est trop long`,
+    });
+  if (!validator.isLength(lastName, { min: 3 }))
+    return res.status(401).json({
+      message: `Le texte du prénom est trop pétit`,
+    });
+  if (!validator.isLength(lastName, { max: 25 }))
+    return res.status(401).json({
+      message: `Le texte du prénom est trop long`,
     });
   /**Vérifiez s'il respecte le format d'un email grâce à l'expression régulier de validator xxxxxxx@xxxxx.xxx */
   if (!validator.isEmail(email))
@@ -66,30 +76,6 @@ module.exports.register = async_handler(async (req, res) => {
       message: `Saisissez un émail valide pour vous inscrire. ex:********@gmail.com`,
     });
 
-  /**Vérifer si les champs sont vides */
-  if (
-    validator.isEmpty(firstName) ||
-    validator.isEmpty(lastName) ||
-    validator.isEmpty(email) ||
-    validator.isEmpty(tel) ||
-    validator.isEmpty(instrument) ||
-    validator.isEmpty(partition) ||
-    validator.isEmpty(password) ||
-    validator.isEmpty(sexe)
-  )
-    return res.status(401).json({
-      message: `Veuillez remplir touts les champs`,
-    });
-  /**Vérifez si le numéro de téléphone est un format du bénin , il doit avoir 8 nombres */
-  if (!validator.isLength(tel, { min: 8, max: 8 }))
-    return res.status(401).json({
-      message: `Saisissez un numéro de téléphone du Bénin valide sans espace. Ex: 53000000`,
-    });
-  /**Permettre a notre user de metrtre un mot de passe sécurisé en le forçant à y mettre plus de 5  */
-  if (!validator.isLength(password, { min: 5, max: 15 }))
-    return res.status(401).json({
-      message: `Choisissez un mot de passe à 5 caractère minimum et en dessous de 15 caractère maximum`,
-    });
   /*2 - Verifiez maintenant s'il s'est déja inscrit, il cherchera l'email ou le numéro de téléphone lors de l'insertion dans la bd avec la méthode findOne de mongoose puisqu'il est unique par utulisateur. L'erreur sera recuperer dans le bloc catch*/
 
   try {
@@ -104,7 +90,21 @@ module.exports.register = async_handler(async (req, res) => {
     return res.status(403).json({
       message: `L'utilisateur avec cet email ou tél existe déjà. Veuillez-vous connectez`,
     });
-
+  /**Vérifez si le numéro de téléphone est un format du bénin , il doit avoir 8 nombres */
+  if (!validator.isLength(tel, { min: 8, max: 8 }))
+    return res.status(401).json({
+      message: `Saisissez un numéro de téléphone du Bénin valide sans espace. Ex: 53000000`,
+    });
+  /**Permettre a notre user de metrtre un mot de passe sécurisé en le forçant à y mettre plus de 5  */
+  if (!validator.isLength(password, { min: 5, max: 15 }))
+    return res.status(401).json({
+      message: `Choisissez un mot de passe à 5 caractère minimum et en dessous de 15 caractère maximum`,
+    });
+  /**Vérifer si les champs sont vides */
+  if (validator.isEmpty(sexe))
+    return res.status(401).json({
+      message: `Veuillez choisir votre sexe`,
+    });
   /* 3 - Crypter le mot de passe avec bcrypt avant l'insertion dans la bd , générer un code à 4 chiffre d'identification, puis génerer des informations dans notre code qr */
 
   /**Génerer un code à 4 chiffre ou le premier chiffre doit obligatoirement être un 0 */
@@ -179,9 +179,9 @@ module.exports.register = async_handler(async (req, res) => {
           true,
           lastName
         ) /**Mettre en majuscule(capitalise) touts nos premiers lettre ex: Abdias Mahougnon Emmanuel */,
-        names: `${setAllMajWords(true, firstName)} ${setAllMajWords(
+        names: `${setAllMajWords(true, lastName)} ${setAllMajWords(
           true,
-          lastName
+          firstName
         )}` /**Mettre le nom en uppercase et le prénom en capitalize  */,
         partition,
         instrument,
@@ -233,7 +233,6 @@ module.exports.register = async_handler(async (req, res) => {
     });
   }
 });
-
 /**2...Connexion d'un membre du groupe fanfare */
 module.exports.login = async_handler(async (req, res) => {
   const { identifier, password } = req.body;
@@ -445,7 +444,7 @@ module.exports.update_profil = async_handler(async (req, res) => {
     !validator.isLength(lastName, { min: 2, max: 25 })
   )
     return res.status(401).json({
-      message: `Vérifez si le nom ou prénom saisir est valide`,
+      message: `Le nom ou le prénom est trop pétit ou trop long`,
     });
   if (!validator.isEmail(email))
     return res
@@ -574,6 +573,30 @@ module.exports.logOut = async_handler(async (req, res) => {
     res.clearCookie(`fanfare`);
     req.cookies = req.cookies || {};
     req.cookies[`fanfare`] = ``;
+    /**Réponse finale */
+    return res.status(200).json({ message: `Déconnexion` });
+  });
+});
+/**7...Déconnexion du plateforme */
+module.exports.logOutSession = async_handler(async (req, res) => {
+  /**Récuperer le cookie */
+  const cookies = req.headers.cookie;
+  const preventToken = cookies?.split(`=`)[1];
+  if (!preventToken) {
+    return res
+      .status(404)
+      .json({ message: `Déconnexion échouée, veuillez réessayer plus tard` });
+  }
+  /**Vérifez si l'utilisateur est connecté avec le cookie stocké dans le navigateur */
+  jwt.verify(String(preventToken), process.env.TOKEN_SECRETE, (err) => {
+    if (err) {
+      return res
+        .status(400)
+        .json({ message: `Authentification échoué ${err}` });
+    }
+    // res.clearCookie(`fanfare`);
+    // req.cookies = req.cookies || {};
+    // req.cookies[`fanfare`] = ``;
     /**Réponse finale */
     return res.status(200).json({ message: `Déconnexion` });
   });
@@ -1539,4 +1562,35 @@ module.exports.confirmDelete = async_handler(async (req, res, next) => {
       .json({ message: `Erreur intere du serveur ${error}` });
   }
   next();
+});
+module.exports.findUser = async_handler(async (req, res) => {
+  const { identifier } = req.body;
+  /*2- Récuperer l'email ou le numéro de phone pour se connecter */
+  let existingUser;
+  if (validator.isEmail(identifier)) {
+    existingUser = { email: identifier }; /**Accepte si c'est un email */
+  } else if (validator.isMobilePhone(identifier, `any`)) {
+    /**Acccepte si c'est un numéro de n'importe quel pays c'est pourquoi on à 'any' comme seconde valeur */
+    existingUser = { tel: identifier };
+  } else
+    return res.status(400).json({
+      message: `Veuillez saisir un émail ou un numéro de téléphone du Bénin valide.`,
+    });
+
+  /**Recuperer la valeur qui passe et le rechercher */
+  User.findOne(existingUser)
+    .then((user) => {
+      if (!user)
+        return res.status(401).json({
+          message: `Vous n'avez pas de compte avec ces informations d'identification, veuillez vous inscrire en premier.`,
+        });
+
+      /**Réponse finale quand il est authentifié */
+      return res.send(user);
+    })
+    .catch((err) => {
+      return res.status(500).send({
+        message: `Erreur interne du serveur, veuillez réessayez plus tard ! ${err}`,
+      });
+    });
 });

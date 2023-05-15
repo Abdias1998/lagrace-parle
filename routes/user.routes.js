@@ -106,6 +106,12 @@ router.put("/reset/:token", auth_controller.resetPassword);
 /**Déconnexion */
 
 router.post("/logout", middleware.verifyToken, auth_controller.logOut);
+router.get("/find", middleware.verifyToken, auth_controller.findUser);
+router.post(
+  "/logoutSession",
+  middleware.verifyToken,
+  auth_controller.logOutSession
+);
 
 /**Mettre à jour ses informations de profil */
 router.put(
