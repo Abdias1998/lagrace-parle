@@ -1579,14 +1579,15 @@ module.exports.findUser = async_handler(async (req, res) => {
 
   /**Recuperer la valeur qui passe et le rechercher */
   User.findOne(existingUser)
+    // .select(`-password`)
     .then((user) => {
       if (!user)
         return res.status(401).json({
-          message: `Vous n'avez pas de compte avec ces informations d'identification, veuillez vous inscrire en premier.`,
+          message: `Vous n'avez pas de compte avec ces informations d'identification.`,
         });
 
       /**Réponse finale quand il est authentifié */
-      return res.send(user);
+      return res.status(200).json({ user });
     })
     .catch((err) => {
       return res.status(500).send({
