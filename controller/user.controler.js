@@ -1590,7 +1590,7 @@ module.exports.findUser = async_handler(async (req, res) => {
       return res.status(200).json({ user });
     })
     .catch((err) => {
-      return res.status(500).send({
+      return res.status(500).json({
         message: `Erreur interne du serveur, veuillez réessayez plus tard ! ${err}`,
       });
     });
