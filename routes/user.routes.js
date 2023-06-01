@@ -99,6 +99,7 @@ router.post(
 /**Souscrire un membre pour les 3 premier mois */
 router.post("/souscription/:id", auth_controller.souscrireUnMembre);
 
+router.post("/findUser", auth_controller.findUserByEmailorTel);
 /**Mettre un nouveau mot de passe */
 router.put("/reset/:token", auth_controller.resetPassword);
 // router.put("/reset/:delete", auth_controller.confirmDelete);
@@ -106,7 +107,6 @@ router.put("/reset/:token", auth_controller.resetPassword);
 /**Déconnexion */
 
 router.post("/logout", middleware.verifyToken, auth_controller.logOut);
-router.post("/findUser", auth_controller.findUser);
 router.post(
   "/logoutSession",
   middleware.verifyToken,

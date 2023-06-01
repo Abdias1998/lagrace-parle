@@ -1563,7 +1563,7 @@ module.exports.confirmDelete = async_handler(async (req, res, next) => {
   }
   next();
 });
-module.exports.findUser = async_handler(async (req, res) => {
+module.exports.findUserByEmailorTel = async_handler(async (req, res) => {
   const { identifier } = req.body;
   /*2- Récuperer l'email ou le numéro de phone pour se connecter */
   let existingUser;
@@ -1583,7 +1583,7 @@ module.exports.findUser = async_handler(async (req, res) => {
     .then((user) => {
       if (!user)
         return res.status(401).json({
-          message: `Vous n'avez pas de compte avec ces informations d'identification.`,
+          message: `Vous n'avez pas de compte avec ces informations d'identification. Veuillez vous inscrire`,
         });
 
       /**Réponse finale quand il est authentifié */
