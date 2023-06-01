@@ -20,6 +20,14 @@ const videoSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  participatesViews: {
+    type: [
+      {
+        userId: String,
+        timestamp: Number,
+      },
+    ],
+  },
   viewedBy: [
     {
       type: mongoose.Schema.Types.ObjectId,

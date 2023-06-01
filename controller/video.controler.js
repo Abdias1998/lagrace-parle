@@ -39,7 +39,7 @@ module.exports.readVideo = async (req, res) => {
       });
   }).sort({ createdAt: -1 });
 };
-module.exports.ViewsMiddelware = async (req, res, next) => {
+module.exports.ViewsMiddelware = async (req, res) => {
   const { user } = req.body;
   try {
     const video = await Video.findById({ _id: req.params.id });
@@ -48,15 +48,16 @@ module.exports.ViewsMiddelware = async (req, res, next) => {
     }
     if (video.viewedBy?.includes(user)) {
       // L'utilisateur a déjà visionné la vidéo, ne rien faire
-      res.send("Video views");
+      return res.status(400).json({ message: "Video views" });
     }
     // L'utilisateur n'a pas encore visionné la vidéo, incrémenter le nombre de vues et ajouter l'utilisateur à la liste des utilisateurs ayant visionné la vidéo
     video.views++;
-    video.viewedBy?.push(user);
+    video.viewedBy.push(user);
     await video.save();
     return res.send("Video view");
   } catch (error) {
-    next(error);
+    // next(error);
+    return res.status(400).json({ message: `${error}` });
   }
 };
 

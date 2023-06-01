@@ -9,6 +9,14 @@ const partitionSchema = mongoose.Schema(
     partition: { type: String, required: true },
 
     categorie: { type: String, required: true },
+    participatesViews: {
+      type: [
+        {
+          userId: String,
+          timestamp: Number,
+        },
+      ],
+    },
   },
   {
     timestamps: true,

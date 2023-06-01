@@ -24,6 +24,14 @@ const EventSchema = new mongoose.Schema({
     type: [String],
     required: true,
   },
+  participatesViews: {
+    type: [
+      {
+        userId: String,
+        timestamp: Number,
+      },
+    ],
+  },
 });
 
 module.exports = mongoose.model("calendar", EventSchema);

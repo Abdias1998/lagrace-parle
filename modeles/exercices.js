@@ -9,6 +9,14 @@ const ExercicesSchema = new mongoose.Schema(
     date: {
       type: String,
     },
+    participatesViews: {
+      type: [
+        {
+          userId: String,
+          timestamp: Number,
+        },
+      ],
+    },
   },
   {
     timestamps: true,

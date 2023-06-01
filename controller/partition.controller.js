@@ -70,3 +70,38 @@ module.exports.deletePartition = async_handler(async (req, res) => {
       });
   });
 });
+
+// module.exports.likePost = async (req, res) => {
+//   if (!ObjectdId.isValid(req.params.id))
+//     return res.status(400).json("Id Inconnue" + req.params.id);
+
+//   try {
+//     // Ajouter le like au publication
+//     Partition.findByIdAndUpdate(
+//       req.params.id,
+//       {
+//         $addToSet: { participatesViews: req.body.id },
+//       },
+//       { new: true, upsert: true },
+//       (error, docs) => {
+//         if (!error) res.status(201).json(docs);
+//         else return res.status(400).json(error);
+//       }
+//     );
+
+//     //Ajouter l'id au likes
+
+//     UserModel.findByIdAndUpdate(
+//       req.body.id,
+//       {
+//         $addToSet: { likes: req.params.id },
+//       },
+//       { new: true, upsert: true },
+//       (error, docs) => {
+//         if (error) return res.send(error);
+//       }
+//     );
+//   } catch (error) {
+//     res.status(500).json({ message: error });
+//   }
+// };

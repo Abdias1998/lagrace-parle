@@ -4,17 +4,15 @@ const mongoose = require("mongoose");
 const ObjectdId = mongoose.Types.ObjectId;
 
 const async_handler = require(`express-async-handler`);
-/* global process */
-/**Créer un chant de Audio */
 
+/* global process */
+/**Créer un Audio */
 module.exports.createAudio = async_handler(async (req, res) => {
   const { title } = req.body;
-  /**Vérifiez si le poster id est celle de l'administrateur si noon renvoyer une erreur 404  */
 
   /**Envoyer les données dans notre base de donnée */
   const newAudio = new Audio({
     title,
-
     audio:
       req.file !== null
         ? `${process.env.URL}/audio/${req.file.originalname}`
@@ -34,7 +32,7 @@ module.exports.createAudio = async_handler(async (req, res) => {
   }
 });
 
-/**Récuperer touts les chants */
+/**Récuperer touts les audios */
 module.exports.readAudio = async_handler(async (req, res) => {
   Audio.find((err, docs) => {
     if (!err) res.send(docs);
@@ -46,11 +44,12 @@ module.exports.readAudio = async_handler(async (req, res) => {
   }).sort({ createdAt: -1 });
 });
 
+/**Supprimez un audio */
 module.exports.deleteAudio = async_handler(async (req, res) => {
   const id = req.params.id;
 
   if (!ObjectdId.isValid(id)) {
-    return res.status(400).send("Id Inconnue" + req.params.id);
+    return res.status(400).send("Id de l'audio inconnue" + req.params.id);
   }
 
   Audio.findByIdAndRemove(id, (err, docs) => {

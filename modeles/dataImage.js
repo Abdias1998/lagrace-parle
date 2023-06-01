@@ -17,6 +17,14 @@ const ImageSchema = mongoose.Schema(
       required: true,
       trim: true,
     },
+    participatesViews: {
+      type: [
+        {
+          userId: String,
+          timestamp: Number,
+        },
+      ],
+    },
     pictures: {
       type: [
         {
