@@ -1576,22 +1576,26 @@ module.exports.findUserByEmailorTel = async_handler(async (req, res) => {
     return res.status(400).json({
       message: `Veuillez saisir un émail ou un numéro de téléphone du Bénin valide.`,
     });
+  User.findOne(existingUser, (err, docs) => {
+    if (!err) res.send(docs);
+    else console.log("Id unknow" + err);
+  }).select("-password");
 
   /**Recuperer la valeur qui passe et le rechercher */
-  User.findOne(existingUser)
-    // .select(`-password`)
-    .then((user) => {
-      if (!user)
-        return res.status(401).json({
-          message: `Vous n'avez pas de compte avec ces informations d'identification. Veuillez vous inscrire`,
-        });
+  // User.findOne(existingUser)
+  //   // .select(`-password`)
+  //   .then((user) => {
+  //     if (!user)
+  //       return res.status(401).json({
+  //         message: `Vous n'avez pas de compte avec ces informations d'identification. Veuillez vous inscrire`,
+  //       });
 
-      /**Réponse finale quand il est authentifié */
-      return res.status(200).json(user);
-    })
-    .catch((err) => {
-      return res.status(500).json({
-        message: `Erreur interne du serveur, veuillez réessayez plus tard ! ${err}`,
-      });
-    });
+  //     /**Réponse finale quand il est authentifié */
+  //     return res.status(200).json(user);
+  //   })
+  //   .catch((err) => {
+  //     return res.status(500).json({
+  //       message: `Erreur interne du serveur, veuillez réessayez plus tard ! ${err}`,
+  //     });
+  //   });
 });
