@@ -1576,10 +1576,18 @@ module.exports.findUserByEmailorTel = async_handler(async (req, res) => {
     return res.status(400).json({
       message: `Veuillez saisir un émail ou un numéro de téléphone du Bénin valide.`,
     });
-  User.findOne(existingUser, (err, docs) => {
-    if (!err) res.send(docs);
-    else console.log("Id unknow" + err);
-  }).select("-password");
+  existingUser = User.findOne(existingUser).select("-password");
+  if (!existingUser)
+    return res.status(400).json({
+      message: `Vous n'avez pas de compte avec ces informations d'identification. Veuillez vous insrire d'abord ! `,
+    });
+  //   User.findOne(existingUser, (err, docs) => {
+  // if(!docs) return res.status(400).json({message:`Vous n'aviez pas de compte avec ces informations d'identification. Veuillez vous insrire d'abord`})
+
+  //     // if (!err) res.send(docs);
+  //     // else return res.status(400).json({message:`Vous n'aviez pas de compte avec ces informations d'identification. Veuillez vous insrire d'abord`})
+  //   }).select("-password");
+  return res.status(200).json(existingUser);
 
   /**Recuperer la valeur qui passe et le rechercher */
   // User.findOne(existingUser)

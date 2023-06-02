@@ -52,6 +52,9 @@ app.get("/login", function (req, res) {
 app.get("/find", function (req, res) {
   res.sendFile(path.join(__dirname, "./client/build", "index.html"));
 });
+app.get("/session", function (req, res) {
+  res.sendFile(path.join(__dirname, "./client/build", "index.html"));
+});
 app.get("/home", function (req, res) {
   res.sendFile(path.join(__dirname, "./client/build", "index.html"));
 });
