@@ -1102,7 +1102,7 @@ module.exports.sendPdfListe = async_handler(async (req, res) => {
 
     users
       .filter(
-        (membre) => membre.isSuperAdmin === false || membre.isMember === false
+        (membre) => membre.isSuperAdmin === false || membre.isMember === true
       )
       // .slice(0, 80)
       .sort()
@@ -1186,7 +1186,7 @@ module.exports.sendPdfListeEvaluation = async_handler(async (req, res) => {
 
     users
       .filter(
-        (membre) => membre.isSuperAdmin === false || membre.isMember === false
+        (membre) => membre.isSuperAdmin === false || membre.isMember === true
       )
       // .slice(0, 80)
       .sort()
@@ -1583,21 +1583,23 @@ module.exports.findUserByEmailorTel = async_handler(async (req, res) => {
     return res.status(400).json({
       message: `Veuillez saisir un émail ou un numéro de téléphone du Bénin valide.`,
     });
-  existingUser = User.findOne(existingUser).select("-password");
-  if (!existingUser)
-    return res.status(400).json({
-      message: `Vous n'avez pas de compte avec ces informations d'identification. Veuillez vous insrire d'abord ! `,
+
+  User.findOne(existingUser)
+    .then((user) => {
+      if (!user)
+        return res.status(401).json({
+          message: `Vous n'avez pas de compte avec ces informations d'identification, veuillez vous inscrire en premier.`,
+        });
+
+      /**Réponse finale quand il est authentifié */
+      return res.status(200).json(user);
+    })
+    .catch((err) => {
+      return res.status(500).send({
+        message: `Erreur interne du serveur, veuillez réessayez plus tard ! ${err}`,
+      });
     });
-  //   User.findOne(existingUser, (err, docs) => {
-  // if(!docs) return res.status(400).json({message:`Vous n'aviez pas de compte avec ces informations d'identification. Veuillez vous insrire d'abord`})
 
-  //     // if (!err) res.send(docs);
-  //     // else return res.status(400).json({message:`Vous n'aviez pas de compte avec ces informations d'identification. Veuillez vous insrire d'abord`})
-  //   }).select("-password");
-  return res.status(200).json(existingUser);
-
-  /**Recuperer la valeur qui passe et le rechercher */
-  // User.findOne(existingUser)
   //   // .select(`-password`)
   //   .then((user) => {
   //     if (!user)
