@@ -164,7 +164,8 @@ module.exports.register = async_handler(async (req, res) => {
         if (
           email === process.env.ADMINPUPITRE ||
           email === process.env.USER_Proph ||
-          email === process.env.USER_DRUM
+          email === process.env.USER_DRUM ||
+          email === process.env.USER
         )
           return true;
       }
@@ -197,6 +198,7 @@ module.exports.register = async_handler(async (req, res) => {
         isSuperAdmin: isSuperAdmin(),
         isAdminDev: isAdminDev(),
         souscription: "1",
+        isMember: true,
       });
       user.save(); /**Enrégister l'utilisateur dans la bd */
 
@@ -224,7 +226,7 @@ module.exports.register = async_handler(async (req, res) => {
       /**Réponse finale lorque tous se passe bien */
 
       return res.status(201).json({
-        message: `Nous venons d'envoyer votre numéro d'identification personnele à 4 chiffre à votre adresse mail que vous pouvez consulter`,
+        message: `Inscription réussie.Nous venons d'envoyer votre numéro d'identification personnele à 4 chiffre à votre adresse mail que vous pouvez consulter`,
       });
     });
   } catch (error) {
@@ -1098,7 +1100,9 @@ module.exports.sendPdfListe = async_handler(async (req, res) => {
     `;
 
     users
-      .filter((membre) => membre.isSuperAdmin === false)
+      .filter(
+        (membre) => membre.isSuperAdmin === false || membre.isMember === false
+      )
       // .slice(0, 80)
       .sort()
       .forEach((user) => {
@@ -1180,7 +1184,9 @@ module.exports.sendPdfListeEvaluation = async_handler(async (req, res) => {
     `;
 
     users
-      .filter((membre) => membre.isSuperAdmin === false)
+      .filter(
+        (membre) => membre.isSuperAdmin === false || membre.isMember === false
+      )
       // .slice(0, 80)
       .sort()
       .forEach((user) => {

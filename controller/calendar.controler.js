@@ -7,7 +7,7 @@ const async_handler = require(`express-async-handler`);
 
 module.exports.CreateCalendar = async_handler(async (req, res) => {
   try {
-    const { title, start, end, location, description } = req.body;
+    const { title, start, end, location, description, views } = req.body;
 
     const event = new Event({
       title: title,
@@ -16,6 +16,7 @@ module.exports.CreateCalendar = async_handler(async (req, res) => {
       location: location,
       description: description,
       likers: [],
+      views: views,
     });
 
     // Enregistrer le nouvel événement dans la base de données
@@ -32,7 +33,7 @@ module.exports.CreateCalendar = async_handler(async (req, res) => {
 });
 module.exports.updateCalendar = async_handler(async (req, res) => {
   try {
-    const { title, start, end, location, description } = req.body;
+    const { title, start, end, location, description, views } = req.body;
     const event = await Event.findById(req.params.id);
 
     if (!event) {
@@ -47,6 +48,7 @@ module.exports.updateCalendar = async_handler(async (req, res) => {
     event.end = end;
     event.location = location;
     event.description = description;
+    event.views = views;
 
     // Enregistrer l'événement modifié dans la base de données
     await event.save();

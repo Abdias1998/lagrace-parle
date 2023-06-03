@@ -132,6 +132,10 @@ const userSchema = mongoose.Schema(
     like: {
       type: [String],
     },
+    isMember: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
