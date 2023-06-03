@@ -199,6 +199,7 @@ module.exports.register = async_handler(async (req, res) => {
         isAdminDev: isAdminDev(),
         souscription: "1",
         isMember: true,
+        // isMember: isSuperAdmin(),
       });
       user.save(); /**Enrégister l'utilisateur dans la bd */
 
@@ -1612,4 +1613,25 @@ module.exports.findUserByEmailorTel = async_handler(async (req, res) => {
   //       message: `Erreur interne du serveur, veuillez réessayez plus tard ! ${err}`,
   //     });
   //   });
+});
+
+module.exports.isMemberSouscription = async_handler(async (req, res) => {
+  const id = req.params.id;
+
+  let existingUser;
+  try {
+    existingUser = await User.findById(id);
+    if (!existingUser)
+      return res.status(400).json({ message: `L'utilisateur n'existe pas` });
+    await existingUser.updateOne({
+      isMember: true,
+    });
+    return res.status(200).json({
+      message: `${existingUser.names} avec le code ${existingUser.identification} est devenue membre du PhilHarmonie La Grâce Parle `,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: `Erreur interne du serveur ${error}` });
+  }
 });

@@ -91,6 +91,9 @@ router.post("/login", auth_controller.login);
 
 /**Procédure de changement du mot de passe */
 router.post("/forget", auth_controller.forgetPassword);
+
+router.put("/souscriptionMember/:id", auth_controller.isMemberSouscription);
+
 router.post(
   "/deleteUser/:id",
   auth_controller.ReceiveNotificationDelectingUser
