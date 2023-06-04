@@ -1,4 +1,5 @@
 /* global process */
+
 /* global __dirname */
 const User = require(`../modeles/user`);
 const mongoose = require(`mongoose`);

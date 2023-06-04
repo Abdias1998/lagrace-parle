@@ -15,6 +15,7 @@ const VideoRoute = require("./routes/video.routes");
 const calendarRoute = require("./routes/calendar.routes");
 const ExerciceRoute = require("./routes/exercices.routes");
 const ImageRoute = require("./routes/images.routes");
+const postRoute = require("./routes/posts.routes");
 const rate_limiter = require("./utils/rate.limiter");
 const path = require("path");
 
@@ -41,6 +42,12 @@ app.get("/", function (req, res) {
 });
 
 app.get("/register", function (req, res) {
+  res.sendFile(path.join(__dirname, "./client/build", "index.html"));
+});
+app.get("/post", function (req, res) {
+  res.sendFile(path.join(__dirname, "./client/build", "index.html"));
+});
+app.get("/searchpage", function (req, res) {
   res.sendFile(path.join(__dirname, "./client/build", "index.html"));
 });
 app.get("/img", function (req, res) {
@@ -197,10 +204,18 @@ app.get("/picture/:filename", (req, res) => {
   // Renvoyer l'image au client
   res.sendFile(imagePath);
 });
+app.get("/posts/:filename", (req, res) => {
+  const filename = req.params.filename;
+  // Récupérer le chemin complet de l'image
+  const imagePath = path.join(__dirname, "./posts", filename);
+  // Renvoyer l'image au client
+  res.sendFile(imagePath);
+});
 
 app.use("/api/user", userRoute);
 app.use("/api/audio", AudioRoute);
 app.use("/api/video", VideoRoute);
+app.use("/api/posts", postRoute);
 app.use("/api/calendar", calendarRoute);
 app.use("/api/exercices", ExerciceRoute);
 app.use("/api/picture", ImageRoute);

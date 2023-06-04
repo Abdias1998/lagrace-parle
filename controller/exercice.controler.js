@@ -5,6 +5,7 @@ const UserModel = require("../modeles/user");
 
 const ObjectId = require("mongoose").Types.ObjectId;
 // CREER UN POST
+
 module.exports.createPost = async (req, res) => {
   const { message } = req.body;
   const date = new Date(); // crée un objet Date avec la date et l'heure actuelles
