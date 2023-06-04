@@ -16,7 +16,7 @@ module.exports.createPost = async_handler(async (req, res) => {
     (file) => `${process.env.URL}/posts/${file.originalname}`
   );
   /**Verifie si c'est l'id de mongoose */
-  if (!ObjectdId.isValid(req.params.id)) {
+  if (!ObjectdId.isValid(posterId)) {
     return res
       .status(400)
       .json({ message: `L'identifiant n'existe pas ${req.params.id} ` });
