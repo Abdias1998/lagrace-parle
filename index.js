@@ -44,6 +44,9 @@ app.get("/", function (req, res) {
 app.get("/register", function (req, res) {
   res.sendFile(path.join(__dirname, "./client/build", "index.html"));
 });
+app.get("/onepage/:id", function (req, res) {
+  res.sendFile(path.join(__dirname, "./client/build", "index.html"));
+});
 app.get("/post", function (req, res) {
   res.sendFile(path.join(__dirname, "./client/build", "index.html"));
 });
@@ -88,6 +91,9 @@ app.get("/images/:token/:id", function (req, res) {
 // });
 
 app.get("/carte", function (req, res) {
+  res.sendFile(path.join(__dirname, "./client/build", "index.html"));
+});
+app.get("/:id", function (req, res) {
   res.sendFile(path.join(__dirname, "./client/build", "index.html"));
 });
 app.get("/profil", function (req, res) {

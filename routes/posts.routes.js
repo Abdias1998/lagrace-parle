@@ -24,4 +24,8 @@ router.post(
   uploads.array("posts", 20),
   post_controller.createPost
 );
+router.get("/", middleware.verifyToken, post_controller.readPost); // Récuperer touts les posts
+
+router.get("/:id", post_controller.userPost); // Post d'un utilisateur
+
 module.exports = router;

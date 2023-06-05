@@ -27,12 +27,20 @@ const PostSchema = new mongoose.Schema(
       trim: true,
     },
     message: {
-      type: String,
-      trim: true,
-    },
-    colorActive: {
-      type: String,
-      trim: true,
+      type: [
+        {
+          texte: {
+            type: String,
+            trim: true,
+          },
+        },
+        {
+          colorActive: {
+            type: String,
+            trim: true,
+          },
+        },
+      ],
     },
 
     likers: {
