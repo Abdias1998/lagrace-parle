@@ -13,7 +13,7 @@ module.exports.createPost = async_handler(async (req, res) => {
     req.body;
 
   const pictures = req.files?.map(
-    (file) => `${process.env.URL}/posts/${file.originalname}`
+    (file) => `${process.env.URL}/post/${file.originalname}`
   );
   /**Verifie si c'est l'id de mongoose */
   if (!ObjectdId.isValid(posterId)) {
@@ -28,11 +28,12 @@ module.exports.createPost = async_handler(async (req, res) => {
   //   return res.status(400).json({ message: `Votre texte est trop long` });
 
   /**Vérifie si les photos sont trop volumineux */
+  const message = [{ texte, colorActive }];
   const newPost = new PostModel({
     posterId,
     instrumentPost,
     partitionPost,
-    message: [texte, colorActive],
+    message,
     likers: [],
     comments: [],
     pictures,

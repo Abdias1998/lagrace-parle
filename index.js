@@ -210,7 +210,7 @@ app.get("/picture/:filename", (req, res) => {
   // Renvoyer l'image au client
   res.sendFile(imagePath);
 });
-app.get("/posts/:filename", (req, res) => {
+app.get("/post/:filename", (req, res) => {
   const filename = req.params.filename;
   // Récupérer le chemin complet de l'image
   const imagePath = path.join(__dirname, "./posts", filename);
