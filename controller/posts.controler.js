@@ -23,9 +23,9 @@ module.exports.createPost = async_handler(async (req, res) => {
   }
   /**Vérifie si la vidéo n'est pas trop lourde */
 
-  /**Vérifie si le texte est trop long et s'il contient des mots inacepatable */
-  if (texte.length > 600)
-    return res.status(400).json({ message: `Votre texte est trop long` });
+  // /**Vérifie si le texte est trop long et s'il contient des mots inacepatable */
+  // if (texte.length > 600)
+  //   return res.status(400).json({ message: `Votre texte est trop long` });
 
   /**Vérifie si les photos sont trop volumineux */
   const newPost = new PostModel({
