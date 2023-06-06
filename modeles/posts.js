@@ -29,16 +29,9 @@ const PostSchema = new mongoose.Schema(
     message: {
       type: [
         {
-          texte: {
-            type: String,
-            trim: true,
-          },
-        },
-        {
-          colorActive: {
-            type: String,
-            trim: true,
-          },
+          colorActive: String,
+
+          texte: String,
         },
       ],
     },
