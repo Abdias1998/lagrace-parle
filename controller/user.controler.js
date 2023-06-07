@@ -4,8 +4,10 @@
 const User = require(`../modeles/user`);
 const mongoose = require(`mongoose`);
 const bcrypt = require(`bcrypt`);
+
 const jwt = require(`jsonwebtoken`);
 const ObjectdId = mongoose.Types.ObjectId;
+
 const sendEmail_request = require(`../utils/send.email`);
 
 const sendEmail = sendEmail_request.sendEmail;
@@ -1593,7 +1595,7 @@ module.exports.findUserByEmailorTel = async_handler(async (req, res) => {
         });
 
       /**Réponse finale quand il est authentifié */
-      return res.status(200).json(user);
+      return res.status(200).send(user);
     })
     .catch((err) => {
       return res.status(500).send({
