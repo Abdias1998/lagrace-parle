@@ -13,7 +13,7 @@ module.exports.createPost = async_handler(async (req, res) => {
     req.body;
 
   const pictures = req.files?.map(
-    (file) => `${process.env.URL}/post/${file.originalname}`
+    (file) => `${process.env.URL}/posts/${file.originalname}`
   );
   /**Verifie si c'est l'id de mongoose */
   if (!ObjectdId.isValid(posterId)) {

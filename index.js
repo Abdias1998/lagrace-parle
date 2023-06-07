@@ -161,6 +161,7 @@ app.get("/delete/:token/:id", function (req, res) {
 
 app.use(express.static(path.join(__dirname, "./image")));
 app.use(express.static(path.join(__dirname, "./partition")));
+app.use(express.static(path.join(__dirname, "./posts")));
 app.use(express.static(path.join(__dirname, "./audio")));
 app.use(express.static(path.join(__dirname, "./video")));
 app.use(express.static(path.join(__dirname, "./exercices")));
@@ -211,7 +212,7 @@ app.get("/picture/:filename", (req, res) => {
   // Renvoyer l'image au client
   res.sendFile(imagePath);
 });
-app.get("/post/:filename", (req, res) => {
+app.get("/posts/:filename", (req, res) => {
   const filename = req.params.filename;
   // Récupérer le chemin complet de l'image
   const imagePath = path.join(__dirname, "./posts", filename);
@@ -222,7 +223,7 @@ app.get("/post/:filename", (req, res) => {
 app.use("/api/user", userRoute);
 app.use("/api/audio", AudioRoute);
 app.use("/api/video", VideoRoute);
-app.use("/api/posts", postRoute);
+app.use("/api/post", postRoute);
 app.use("/api/calendar", calendarRoute);
 app.use("/api/exercices", ExerciceRoute);
 app.use("/api/picture", ImageRoute);
