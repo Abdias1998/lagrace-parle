@@ -13,7 +13,7 @@ module.exports.createPost = async_handler(async (req, res) => {
     req.body;
 
   const pictures = req.files?.map(
-    (file) => `${process.env.URL}/posts/${file.originalname}`
+    (file) => `${process.env.URL}/post/${file.originalname}`
   );
   /**Verifie si c'est l'id de mongoose */
   if (!ObjectdId.isValid(posterId)) {
@@ -63,3 +63,83 @@ module.exports.userPost = async_handler(async (req, res) => {
     else console.log("Id unknow" + err);
   });
 });
+module.exports.deletePost = async (req, res) => {
+  const id = req.params.id;
+
+  if (!ObjectdId.isValid(id)) {
+    return res.status(400).send("Id Inconnue" + req.params.id);
+  }
+
+  PostModel.findByIdAndRemove(id, (err, docs) => {
+    if (!err) res.send(docs);
+    else console.log("Delete error" + err);
+  });
+};
+module.exports.likePost = async (req, res) => {
+  if (!ObjectdId.isValid(req.params.id))
+    return res.status(400).json("Id Inconnue" + req.params.id);
+
+  try {
+    // Ajouter le like au publication
+    PostModel.findByIdAndUpdate(
+      req.params.id,
+      {
+        $addToSet: { likers: req.body.id },
+      },
+      { new: true, upsert: true },
+      (error, docs) => {
+        if (!error) res.status(201).json(docs);
+        else return res.status(400).json(error);
+      }
+    );
+
+    //Ajouter l'id au likes
+
+    UserModel.findByIdAndUpdate(
+      req.body.id,
+      {
+        $addToSet: { likes: req.params.id },
+      },
+      { new: true, upsert: true },
+      (error, docs) => {
+        if (error) return res.send(error);
+      }
+    );
+  } catch (error) {
+    res.status(500).json({ message: error });
+  }
+};
+module.exports.unlikePost = async (req, res) => {
+  if (!ObjectdId.isValid(req.params.id))
+    return res.status(400).json("Id Inconnue" + req.params.id);
+
+  try {
+    // Ajouter le like au publication
+    PostModel.findByIdAndUpdate(
+      req.params.id,
+      {
+        $pull: { likers: req.body.id },
+      },
+      { new: true, upsert: true },
+      (error, docs) => {
+        if (!error) res.status(201).json(docs);
+        else return res.status(400).json(error);
+      }
+    );
+
+    //Ajouter l'id au likes
+
+    UserModel.findByIdAndUpdate(
+      req.body.id,
+      {
+        $pull: { likes: req.params.id },
+      },
+      { new: true, upsert: true },
+      (error) => {
+        if (error) return res.send(error);
+      }
+    );
+  } catch (error) {
+    res.status(500).json({ message: error });
+  }
+};

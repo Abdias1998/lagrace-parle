@@ -40,14 +40,14 @@ app.use(express.static(path.join(__dirname, "./client/build")));
 app.get("/", function (req, res) {
   res.sendFile(path.join(__dirname, "./client/build", "index.html"));
 });
-app.get("/:id", function (req, res) {
-  res.sendFile(path.join(__dirname, "./client/build", "index.html"));
-});
 
 app.get("/register", function (req, res) {
   res.sendFile(path.join(__dirname, "./client/build", "index.html"));
 });
-app.get("/onepage/:id", function (req, res) {
+app.get("/publication/:token/:id", function (req, res) {
+  res.sendFile(path.join(__dirname, "./client/build", "index.html"));
+});
+app.get("/:id", function (req, res) {
   res.sendFile(path.join(__dirname, "./client/build", "index.html"));
 });
 app.get("/post", function (req, res) {
@@ -212,7 +212,7 @@ app.get("/picture/:filename", (req, res) => {
   // Renvoyer l'image au client
   res.sendFile(imagePath);
 });
-app.get("/posts/:filename", (req, res) => {
+app.get("/post/:filename", (req, res) => {
   const filename = req.params.filename;
   // Récupérer le chemin complet de l'image
   const imagePath = path.join(__dirname, "./posts", filename);
@@ -223,7 +223,7 @@ app.get("/posts/:filename", (req, res) => {
 app.use("/api/user", userRoute);
 app.use("/api/audio", AudioRoute);
 app.use("/api/video", VideoRoute);
-app.use("/api/post", postRoute);
+app.use("/api/posts", postRoute);
 app.use("/api/calendar", calendarRoute);
 app.use("/api/exercices", ExerciceRoute);
 app.use("/api/picture", ImageRoute);

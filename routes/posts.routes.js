@@ -24,8 +24,15 @@ router.post(
   uploads.array("posts", 20),
   post_controller.createPost
 );
-router.get("/", post_controller.readPost); // Récuperer touts les posts
+router.get("/", middleware.getUser, post_controller.readPost); // Récuperer touts les posts
 
-router.get("/:id", post_controller.userPost); // Post d'un utilisateur
+router.get("/:id", middleware.getUser, post_controller.userPost); // Post d'un utilisateur
+router.delete("/:id", middleware.getUser, post_controller.deletePost); //Supprimer le post de l'utilisateur
+router.patch("/like-post/:id", middleware.getUser, post_controller.likePost); //Liker un post
+router.patch(
+  "/unlike-post/:id",
+  middleware.getUser,
+  post_controller.unlikePost
+); //Ne plus liker un post
 
 module.exports = router;
