@@ -47,10 +47,13 @@ module.exports.createPost = async_handler(async (req, res) => {
 });
 
 module.exports.readPost = async_handler(async (req, res) => {
-  PostModel.find((err, docs) => {
-    if (!err) res.send(docs);
-    else console.log("Error to get data:" + err);
-  }).sort({ createdAt: -1 });
+  try {
+    const posts = await PostModel.find().sort({ createdAt: 1 });
+    res.send(posts);
+  } catch (err) {
+    console.log("Error to get data: " + err);
+    res.status(500).json({ error: "Failed to fetch data" });
+  }
 });
 
 module.exports.userPost = async_handler(async (req, res) => {

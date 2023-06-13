@@ -219,13 +219,6 @@ app.get("/post/:filename", (req, res) => {
   // Renvoyer l'image au client
   res.sendFile(imagePath);
 });
-app.get("/:filename", (req, res) => {
-  const filename = req.params.filename;
-  // Récupérer le chemin complet de l'image
-  const imagePath = path.join(__dirname, "./posts", filename);
-  // Renvoyer l'image au client
-  res.sendFile(imagePath);
-});
 
 app.use("/api/user", userRoute);
 app.use("/api/audio", AudioRoute);
