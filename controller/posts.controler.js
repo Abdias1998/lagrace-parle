@@ -50,8 +50,7 @@ module.exports.readPost = async_handler(async (req, res) => {
   PostModel.find((err, docs) => {
     if (!err) res.send(docs);
     else console.log("Error to get data:" + err);
-  });
-  // .sort({ createdAt: -1 });
+  }).sort({ createdAt: -1 });
 });
 
 module.exports.userPost = async_handler(async (req, res) => {
