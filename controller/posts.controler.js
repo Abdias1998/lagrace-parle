@@ -46,15 +46,12 @@ module.exports.createPost = async_handler(async (req, res) => {
   }
 });
 
-module.exports.readPost = async (req, res) => {
-  try {
-    const docs = await PostModel.find().sort({ createdAt: -1 });
-    res.send(docs);
-  } catch (err) {
-    console.log("Error to get data: " + err);
-    res.status(500).send("An error occurred while retrieving posts.");
-  }
-};
+module.exports.readPost = async_handler(async (req, res) => {
+  PostModel.find((err, docs) => {
+    if (!err) res.send(docs);
+    else console.log("Error to get data:" + err);
+  }).sort({ createdAt: -1 });
+});
 
 module.exports.userPost = async_handler(async (req, res) => {
   if (!ObjectdId.isValid(req.params.id)) {
@@ -104,7 +101,7 @@ module.exports.likePost = async (req, res) => {
         $addToSet: { likes: req.params.id },
       },
       { new: true, upsert: true },
-      (error, docs) => {
+      (error) => {
         if (error) return res.send(error);
       }
     );

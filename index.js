@@ -44,7 +44,7 @@ app.get("/", function (req, res) {
 app.get("/register", function (req, res) {
   res.sendFile(path.join(__dirname, "./client/build", "index.html"));
 });
-app.get("/publication/:token/:id", function (req, res) {
+app.get("/publication/:id", function (req, res) {
   res.sendFile(path.join(__dirname, "./client/build", "index.html"));
 });
 app.get("/:id", function (req, res) {
