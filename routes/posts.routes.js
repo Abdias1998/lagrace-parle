@@ -24,14 +24,18 @@ router.post(
   uploads.array("posts", 20),
   post_controller.createPost
 );
-router.get("/", middleware.getUser, post_controller.readPost); // Récuperer touts les posts
+router.get("/", middleware.verifyToken, post_controller.readPost); // Récuperer touts les posts
 
-router.get("/:id", middleware.getUser, post_controller.userPost); // Post d'un utilisateur
-router.delete("/:id", middleware.getUser, post_controller.deletePost); //Supprimer le post de l'utilisateur
-router.patch("/like-post/:id", middleware.getUser, post_controller.likePost); //Liker un post
+router.get("/:id", middleware.verifyToken, post_controller.userPost); // Post d'un utilisateur
+router.delete("/:id", middleware.verifyToken, post_controller.deletePost); //Supprimer le post de l'utilisateur
+router.patch(
+  "/like-post/:id",
+  middleware.verifyToken,
+  post_controller.likePost
+); //Liker un post
 router.patch(
   "/unlike-post/:id",
-  middleware.getUser,
+  middleware.verifyToken,
   post_controller.unlikePost
 ); //Ne plus liker un post
 

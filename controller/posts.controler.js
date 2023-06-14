@@ -58,7 +58,7 @@ module.exports.readPost = async_handler(async (req, res) => {
 
 module.exports.userPost = async_handler(async (req, res) => {
   if (!ObjectdId.isValid(req.params.id)) {
-    return res.status(400).send("Id Inconnue" + req.params.body);
+    return res.status(400).send("Id Inconnue" + req.params.id);
   }
 
   PostModel.findById(req.params.id, (err, docs) => {
