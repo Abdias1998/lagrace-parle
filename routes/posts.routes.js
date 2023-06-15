@@ -2,7 +2,7 @@ const router = require("express").Router();
 
 const post_controller = require("../controller/posts.controler");
 
-const middleware = require("../middlewre/verify.token");
+// const middleware = require("../middlewre/verify.token");
 
 const multer = require("multer");
 
@@ -24,19 +24,11 @@ router.post(
   uploads.array("posts", 20),
   post_controller.createPost
 );
-router.get("/", middleware.verifyToken, post_controller.readPost); // Récuperer touts les posts
+router.get("/", post_controller.readPost); // Récuperer touts les posts
 
-router.get("/:id", middleware.verifyToken, post_controller.userPost); // Post d'un utilisateur
-router.delete("/:id", middleware.verifyToken, post_controller.deletePost); //Supprimer le post de l'utilisateur
-router.patch(
-  "/like-post/:id",
-  middleware.verifyToken,
-  post_controller.likePost
-); //Liker un post
-router.patch(
-  "/unlike-post/:id",
-  middleware.verifyToken,
-  post_controller.unlikePost
-); //Ne plus liker un post
+router.put("/:id", post_controller.updatePost); //Modifier le post de l'utilisateur
+
+router.get("/:id", post_controller.userPost); // Post d'un utilisateur
+router.delete("/:id", post_controller.deletePost); //Supprimer le post de l'utilisateur
 
 module.exports = router;

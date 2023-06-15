@@ -21,11 +21,6 @@ module.exports.createPost = async_handler(async (req, res) => {
       .status(400)
       .json({ message: `L'identifiant n'existe pas ${req.params.id} ` });
   }
-  /**Vérifie si la vidéo n'est pas trop lourde */
-
-  // /**Vérifie si le texte est trop long et s'il contient des mots inacepatable */
-  // if (texte.length > 600)
-  //   return res.status(400).json({ message: `Votre texte est trop long` });
 
   /**Vérifie si les photos sont trop volumineux */
   const message = [{ texte, colorActive }];
@@ -45,6 +40,32 @@ module.exports.createPost = async_handler(async (req, res) => {
     return res.status(401).send(error);
   }
 });
+module.exports.updatePost = (req, res) => {
+  const { texte, colorActive } = req.body;
+  try {
+    if (!ObjectdId.isValid(req.params.id)) {
+      return res.status(400).send("Id Inconnue" + req.params.id);
+    }
+
+    const updatedMessage = [{ texte, colorActive }];
+
+    PostModel.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: updatedMessage,
+      },
+      {
+        new: true,
+      },
+      (error, docs) => {
+        if (!error) res.send(docs);
+        else res.status(500).json({ message: error });
+      }
+    ).select("-password");
+  } catch (error) {
+    res.status(500).json({ message: error });
+  }
+};
 
 module.exports.readPost = async_handler(async (req, res) => {
   try {
@@ -77,72 +98,4 @@ module.exports.deletePost = async (req, res) => {
     if (!err) res.send(docs);
     else console.log("Delete error" + err);
   });
-};
-module.exports.likePost = async (req, res) => {
-  if (!ObjectdId.isValid(req.params.id))
-    return res.status(400).json("Id Inconnue" + req.params.id);
-
-  try {
-    // Ajouter le like au publication
-    PostModel.findByIdAndUpdate(
-      req.params.id,
-      {
-        $addToSet: { likers: req.body.id },
-      },
-      { new: true, upsert: true },
-      (error, docs) => {
-        if (!error) res.status(201).json(docs);
-        else return res.status(400).json(error);
-      }
-    );
-
-    //Ajouter l'id au likes
-
-    UserModel.findByIdAndUpdate(
-      req.body.id,
-      {
-        $addToSet: { likes: req.params.id },
-      },
-      { new: true, upsert: true },
-      (error) => {
-        if (error) return res.send(error);
-      }
-    );
-  } catch (error) {
-    res.status(500).json({ message: error });
-  }
-};
-module.exports.unlikePost = async (req, res) => {
-  if (!ObjectdId.isValid(req.params.id))
-    return res.status(400).json("Id Inconnue" + req.params.id);
-
-  try {
-    // Ajouter le like au publication
-    PostModel.findByIdAndUpdate(
-      req.params.id,
-      {
-        $pull: { likers: req.body.id },
-      },
-      { new: true, upsert: true },
-      (error, docs) => {
-        if (!error) res.status(201).json(docs);
-        else return res.status(400).json(error);
-      }
-    );
-
-    //Ajouter l'id au likes
-
-    UserModel.findByIdAndUpdate(
-      req.body.id,
-      {
-        $pull: { likes: req.params.id },
-      },
-      { new: true, upsert: true },
-      (error) => {
-        if (error) return res.send(error);
-      }
-    );
-  } catch (error) {
-    res.status(500).json({ message: error });
-  }
 };
