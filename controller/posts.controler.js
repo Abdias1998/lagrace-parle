@@ -1,7 +1,7 @@
 /* global process */
 
 const PostModel = require("../modeles/posts");
-const UserModel = require("../modeles/user");
+// const UserModel = require("../modeles/user");
 const async_handler = require(`express-async-handler`);
 const mongoose = require("mongoose");
 const ObjectdId = mongoose.Types.ObjectId;
@@ -67,15 +67,12 @@ module.exports.updatePost = (req, res) => {
   }
 };
 
-module.exports.readPost = async_handler(async (req, res) => {
-  try {
-    const posts = await PostModel.find().sort({ createdAt: 1 });
-    res.send(posts);
-  } catch (err) {
-    console.log("Error to get data: " + err);
-    res.status(500).json({ error: "Failed to fetch data" });
-  }
-});
+module.exports.readPost = async (req, res) => {
+  PostModel.find((err, docs) => {
+    if (!err) res.send(docs);
+    else console.log("Error to get data:" + err);
+  }).sort({ createdAt: -1 });
+};
 
 module.exports.userPost = async_handler(async (req, res) => {
   if (!ObjectdId.isValid(req.params.id)) {
