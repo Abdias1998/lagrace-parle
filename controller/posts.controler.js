@@ -6,7 +6,7 @@ const async_handler = require(`express-async-handler`);
 const mongoose = require("mongoose");
 const ObjectdId = mongoose.Types.ObjectId;
 
-// CREER UN POST
+// CREER UN POS
 
 module.exports.createPost = async_handler(async (req, res) => {
   const { posterId, colorActive, instrumentPost, partitionPost, texte } =

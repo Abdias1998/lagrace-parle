@@ -14,14 +14,18 @@ const storages = multer.diskStorage({
     cb(null, `${file.originalname}`);
   },
 });
-const uploads = multer({ storage: storages });
+// const uploads = multer({ storage: storages });
+const uploads = multer({
+  storage: storages,
+  limits: { fileSize: 7 * 1024 * 1024 },
+});
 router.get(
   "/read",
   partition_controller.readPartition
 ); /**Lire une partition */
 router.post(
   "/create",
-  uploads.single("partition"),
+  uploads.array("partition", 50),
   partition_controller.createPartition
 ); /**Créer une partition */
 

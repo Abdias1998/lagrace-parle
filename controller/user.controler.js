@@ -430,7 +430,7 @@ module.exports.resetPassword = async_handler(async (req, res) => {
 
 /**5...Mettre à jour le profil au cas ou les informations d'inscription sont mal saisir */
 module.exports.update_profil = async_handler(async (req, res) => {
-  const { firstName, lastName, tel, email } = req.body;
+  const { firstName, lastName, tel, email, instrument, partition } = req.body;
   /**La méthode ObjectId de mongoose pour vérifer si le nombre de caractère est exacte à celle de mongoose */
   if (!ObjectdId.isValid(req.params.id))
     return res.status(404).send({ messsage: `Utulisateur inconnu` });
@@ -440,6 +440,8 @@ module.exports.update_profil = async_handler(async (req, res) => {
     validator.isEmpty(firstName) ||
     validator.isEmpty(lastName) ||
     validator.isEmpty(email) ||
+    validator.isEmpty(instrument) ||
+    validator.isEmpty(partition) ||
     validator.isEmpty(tel)
   )
     return res.status(401).json({
@@ -485,6 +487,8 @@ module.exports.update_profil = async_handler(async (req, res) => {
             lastName: setAllMajWords(true, lastName),
             tel: tel,
             email: email,
+            instrument: instrument,
+            partition: partition,
             names: `${firstName.toUpperCase()} ${setAllMajWords(
               true,
               lastName

@@ -6,7 +6,14 @@ const partitionSchema = mongoose.Schema(
 
     auteur: { type: String, required: true },
     gamme: { type: String, required: true },
-    partition: { type: String, required: true },
+    partition: {
+      type: [
+        {
+          type: String,
+        },
+      ],
+      required: true,
+    },
 
     categorie: { type: String, required: true },
     participatesViews: {

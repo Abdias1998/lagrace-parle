@@ -12,7 +12,9 @@ module.exports.createPartition = async_handler(async (req, res) => {
   /**Vérifiez si le poster id est celle de l'administrateur si noon renvoyer une erreur 404  */
 
   /**Envoyer les données dans notre base de donnée */
-
+  const partition = req.files?.map(
+    (file) => `${process.env.URL}/partition/${file.originalname}`
+  );
   const newPartition = new Partition({
     title,
     auteur,
@@ -20,10 +22,7 @@ module.exports.createPartition = async_handler(async (req, res) => {
     categorie,
 
     // partition: req.file !== null ? `../partition/${req.file.originalname}` : "",
-    partition:
-      req.file !== null
-        ? `${process.env.URL}/partition/${req.file.originalname}`
-        : "",
+    partition,
   });
 
   try {
