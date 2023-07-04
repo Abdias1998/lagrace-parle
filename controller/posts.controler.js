@@ -80,7 +80,7 @@ module.exports.userPost = async_handler(async (req, res) => {
   }
 
   PostModel.findById(req.params.id, (err, docs) => {
-    if (!err) res.send(docs);
+    if (!err) res.status(200).json({ post: docs });
     else console.log("Id unknow" + err);
   });
 });

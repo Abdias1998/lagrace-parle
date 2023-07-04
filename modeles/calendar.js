@@ -20,11 +20,11 @@ const EventSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
-  views: {
-    type: Boolean,
-    required: true,
-    default: false,
-  },
+  // views: {
+  //   type: Boolean,
+  //   required: true,
+  //   default: false,
+  // },
   likers: {
     type: [String],
     required: true,

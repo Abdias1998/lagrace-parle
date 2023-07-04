@@ -150,7 +150,7 @@ module.exports.register = async_handler(async (req, res) => {
   )} ${setAllMajWords(
     true,
     lastName
-  )} est membre du groupe Philharmonia La Grâce Parle, il joue au ${instrument}. ${isSanguinActive()}
+  )} est membre du groupe PhilHarmonie La Grâce Parle, il joue au ${instrument}. ${isSanguinActive()}
  `;
   /**Générer un code qr */
   try {
@@ -718,7 +718,7 @@ module.exports.getAllUsers = async_handler(async (req, res) => {
     if (!error) res.send(docs);
     else
       return res.status(500).json({
-        message: `Vous pouvez pas récuperer les données`,
+        message: `Vous pouvez pas récuperer les données d'utilisateur`,
       });
   })
     .select(`-password`)
@@ -1150,7 +1150,7 @@ module.exports.sendPdfListe = async_handler(async (req, res) => {
       from: `La Grâce Parle <${process.env.USER}>`,
       to: user.email,
       subject:
-        "Liste de présence des utilisateurs de l'application Philharmonia La Grâce Parle",
+        "Liste de présence des utilisateurs de l'application PhilHarmonie La Grâce Parle",
       html: tableHTML, // Ajouter le tableau HTML contenant tous les utilisateurs avec leurs prénoms, noms, heures et statuts dans le corps du message
     };
 
@@ -1222,7 +1222,7 @@ module.exports.sendPdfListeEvaluation = async_handler(async (req, res) => {
       // to: process.env.ADMINPUPITRE,
       to: process.env.USER,
       subject:
-        "Liste de l'évaluation des membres du groupe Philharmonia La Grâce Parle",
+        "Liste de l'évaluation des membres du groupe PhilHarmonie La Grâce Parle",
       html: tableHTML, // Ajouter le tableau HTML contenant tous les utilisateurs avec leurs prénoms, noms, heures et statuts dans le corps du message
     };
 
@@ -1344,7 +1344,7 @@ module.exports.souscrireUnMembre = async_handler(async (req, res) => {
     // Ajout des informations du client
 
     doc.text(
-      `750 f payé par ${user.names} pour sa souscription sur l'application Philharmonia La Grâce Parle`,
+      `750 f payé par ${user.names} pour sa souscription sur l'application PhilHarmonie La Grâce Parle`,
       { align: "center" }
     );
     // Finalisation du document PDF
@@ -1472,7 +1472,7 @@ module.exports.remeberEvenement = async_handler(async (req, res) => {
     },
   });
 
-  members.slice(0, 10).forEach((member) => {
+  members.slice(0, 30).forEach((member) => {
     const mailOptions = {
       from: `La Grâce Parle <${process.env.USER}>`,
       to: member.email,
