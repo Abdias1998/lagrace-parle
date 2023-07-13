@@ -30,5 +30,5 @@ router.put("/:id", post_controller.updatePost); //Modifier le post de l'utilisat
 
 router.get("/:id", post_controller.userPost); // Post d'un utilisateur
 router.delete("/:id", post_controller.deletePost); //Supprimer le post de l'utilisateur
-
+router.patch("/comment-post/:id", post_controller.commentPost); //Commenter un post
 module.exports = router;

@@ -74,16 +74,16 @@ module.exports.readPost = async (req, res) => {
   }).sort({ createdAt: -1 });
 };
 
-module.exports.userPost = async_handler(async (req, res) => {
+module.exports.userPost = async (req, res) => {
   if (!ObjectdId.isValid(req.params.id)) {
-    return res.status(400).send("Id Inconnue" + req.params.id);
+    return res.status(400).send("Id Inconnue" + req.params.body);
   }
 
   PostModel.findById(req.params.id, (err, docs) => {
-    if (!err) res.status(200).json({ post: docs });
+    if (!err) res.send(docs);
     else console.log("Id unknow" + err);
   });
-});
+};
 module.exports.deletePost = async (req, res) => {
   const id = req.params.id;
 
@@ -95,4 +95,36 @@ module.exports.deletePost = async (req, res) => {
     if (!err) res.send(docs);
     else console.log("Delete error" + err);
   });
+};
+
+module.exports.commentPost = async (req, res) => {
+  if (!ObjectdId.isValid(req.params.id))
+    return res.status(400).json("Id Inconnue" + req.params.id);
+  try {
+    return PostModel.findByIdAndUpdate(
+      req.params.id,
+      {
+        $push: {
+          comments: {
+            commenterId: req.body.commenterId,
+
+            text: req.body.text,
+            timestamp: new Date().getTime(),
+          },
+        },
+      },
+      {
+        new: true,
+      }
+      // (error, docs) => {
+      //   if (!error) return res.send(docs);
+      //   else return res.status(400).send(error);
+      // }
+    ).then((err, docs) => {
+      if (!err) return res.send(docs);
+    });
+    // .clone();
+  } catch (error) {
+    return res.status(400).send(error);
+  }
 };

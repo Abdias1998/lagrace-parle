@@ -24,6 +24,7 @@ const PDFDocument = require("pdfkit");
 const nodemailer = require("nodemailer");
 
 const path = require("path");
+const { dateFormat } = require("../utils/date");
 
 // const { dateFormat } = require("../utils/date");
 
@@ -251,6 +252,7 @@ module.exports.login = async_handler(async (req, res) => {
 
   /*2- Récuperer l'email ou le numéro de phone pour se connecter */
   let existingUser;
+
   if (validator.isEmail(identifier)) {
     existingUser = { email: identifier }; /**Accepte si c'est un email */
   } else if (validator.isMobilePhone(identifier, `any`)) {
@@ -268,12 +270,16 @@ module.exports.login = async_handler(async (req, res) => {
           message: `Vous n'avez pas de compte avec ces informations d'identification, veuillez vous inscrire en premier.`,
         });
       /*Vérifiez si quelqu'un à déja initialisé un changement de mot de passe */
-      // if (user.resetPasswordExpires !== null)
-      //   return res.status(401).json({
-      //     message: `Veuillez changer votre mot de passe pour des raisons de sécurité si vous n'êtes pas l'auteur de la procédure de changement du mot de passe du ${dateFormat(
-      //       user.resetPasswordExpires
-      //     )}`,
-      //   });
+      if (user.resetPasswordExpires !== null)
+        return res.status(401).json({
+          message: `Veuillez changer votre mot de passe pour des raisons de sécurité si vous n'êtes pas l'auteur de la 
+          
+          
+          
+          procédure de changement du mot de passe du ${dateFormat(
+            user.resetPasswordExpires
+          )}`,
+        });
 
       /* 3 - Décrypter le mot de passe avant de le vérifiez avec celle de la base de donnée qvec bcrypt*/
       const passwordHashed = bcrypt.compareSync(password, user.password);

@@ -1,4 +1,5 @@
 /**La fonction permet de renvoyer la date au format JJ/MM/YYYY - hh:mm */
+
 module.exports.dateFormat = (num) => {
   let options = {
     hour: "2-digit",
