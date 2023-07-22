@@ -1,5 +1,14 @@
 /* global process */
 
+
+
+
+
+
+
+
+
+
 /* global __dirname */
 const User = require(`../modeles/user`);
 const mongoose = require(`mongoose`);
@@ -431,7 +440,7 @@ module.exports.resetPassword = async_handler(async (req, res) => {
       "Votre mot de passe a été changé avec succès. Veuillez-vous connectez à présent avec le nouveau mot de passe.",
   });
 });
-
+     
 /**5...Mettre à jour le profil au cas ou les informations d'inscription sont mal saisir */
 module.exports.update_profil = async_handler(async (req, res) => {
   const { firstName, lastName, tel, email, instrument, partition } = req.body;

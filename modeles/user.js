@@ -1,5 +1,10 @@
 const mongoose = require("mongoose");
 // const mongoose_sanitize = require("mongoose-sanitize");
+
+
+
+
+
 const unique_validator = require("mongoose-unique-validator");
 
 const userSchema = mongoose.Schema(
@@ -94,6 +99,10 @@ const userSchema = mongoose.Schema(
     },
     resetPasswordToken: {
       type: String,
+      default: "",
+    },
+    resetPasswordExpires: {
+      type: Date,
       default: "",
     },
     deleteUserToken: {

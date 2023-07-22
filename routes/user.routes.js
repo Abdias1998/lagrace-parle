@@ -77,10 +77,19 @@ router.get(
 /**Vérifiez si son token est valide en renvoyant ses informations sans son mot de passse*/
 router.get("/jwt", middleware.verifyToken, middleware.getUser);
 /**Télécharger un fichier de profil */
-router.post("/upload", upload.single("user"), auth_controller.upload_profil);
+router.post(
+  "/upload",
+  upload.single("user"),
+  middleware.verifyToken,
+  auth_controller.upload_profil
+);
 
 /**Faire la liste de présence toutls les lundis à partir de 17h00 à 19h30 */
-router.post("/liste/:userId", auth_controller.updateUserStatus);
+router.post(
+  "/liste/:userId",
+  middleware.verifyToken,
+  auth_controller.updateUserStatus
+);
 /**Evaluer les membres */
 router.post("/note/:id", auth_controller.Evaluer);
 
@@ -146,8 +155,16 @@ router.delete(
 );
 
 /**Mettre à jour après avoir rèçu le pdf */
-router.put("/reset", auth_controller.onReset);
-router.put("/resetAll", auth_controller.onResetAll);
-router.put("/resetAllEvaluer", auth_controller.onResetAllEvaluer);
-router.post("/remember", auth_controller.remeberEvenement);
+router.put("/reset", middleware.verifyToken, auth_controller.onReset);
+router.put("/resetAll", middleware.verifyToken, auth_controller.onResetAll);
+router.put(
+  "/resetAllEvaluer",
+  middleware.verifyToken,
+  auth_controller.onResetAllEvaluer
+);
+router.post(
+  "/remember",
+  middleware.verifyToken,
+  auth_controller.remeberEvenement
+);
 module.exports = router;
