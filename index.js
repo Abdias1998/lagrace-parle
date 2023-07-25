@@ -9,7 +9,7 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const userRoute = require("./routes/user.routes");
-
+const useragent = require("express-useragent");
 const AudioRoute = require("./routes/audio.routes");
 const VideoRoute = require("./routes/video.routes");
 const calendarRoute = require("./routes/calendar.routes");
@@ -25,9 +25,10 @@ const { default: helmet } = require("helmet");
 // const timezone = "Africa/Porto-Novo"; // Fuseau horaire du Bénin
 
 // Environnement variable
+
 const port = process.env.PORT;
 const origineClient = process.env.CLIENT_URL;
-
+app.use(useragent.express());
 // app.use(cookieParser()); //Lire les cookies
 app.use(cookieParser());
 app.use(helmet());

@@ -1,10 +1,6 @@
 const mongoose = require("mongoose");
 // const mongoose_sanitize = require("mongoose-sanitize");
 
-
-
-
-
 const unique_validator = require("mongoose-unique-validator");
 
 const userSchema = mongoose.Schema(
@@ -144,6 +140,14 @@ const userSchema = mongoose.Schema(
     isMember: {
       type: Boolean,
       default: false,
+    },
+    phoneName: {
+      type: String,
+      default: "",
+    },
+    phoneType: {
+      type: String,
+      default: "",
     },
   },
   {

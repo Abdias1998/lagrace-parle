@@ -1018,11 +1018,21 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
 
     return date.toLocaleString("fr-FR", options);
   }
+  const userAgent = req.useragent;
+  const phoneType = userAgent.isMobile ? "Mobile" : "Desktop";
+  const phoneName = userAgent.source.match(/\((.*?)\)/);
 
-  if (now.getDay() === 2 && now.getHours() < 19) {
+  const phoneNameString = phoneName ? phoneName[1] : "Non disponible";
+
+  if (now.getDay() === 2 && now.getHours() < 19 && now.getMinutes() < 30) {
     // Si la date est un lundi entre 17h et 19h30
 
-    const update = { heure: formatDate(now), status: "A l'heure" };
+    const update = {
+      heure: formatDate(now),
+      status: "A l'heure",
+      phoneType: phoneType,
+      phoneName: phoneNameString,
+    };
 
     try {
       const updatedUser = await User.findByIdAndUpdate(
@@ -1038,8 +1048,8 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
     }
   } else if (
     now.getDay() === 2 &&
-    now.getHours() >= 19
-    // now.getMinutes() > 30
+    now.getHours() >= 19 &&
+    now.getMinutes() >= 30
     // &&
 
     // now.getHours() >= 23 &&
@@ -1069,7 +1079,71 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
       );
   }
 });
+module.exports.rapport = async_handler(async (req, res) => {
+  const now = new Date();
+  function formatDate(date) {
+    const options = {
+      timeZone: "Africa/Porto-Novo", // Fuseau horaire de l'Afrique de l'Ouest (Bénin)
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    };
 
+    return date.toLocaleString("fr-FR", options);
+  }
+  try {
+    // Récupérer les données des membres depuis la base de données
+    const membres = await User.find();
+
+    // Initialiser les compteurs pour les status "présent" et "absent" pour chaque instrument
+    const instrumentsData = {};
+
+    // Parcourir les membres et compter les status pour chaque instrument
+    membres.forEach((membre) => {
+      const { instrument, status } = membre;
+
+      if (!instrumentsData[instrument]) {
+        instrumentsData[instrument] = { present: 0, absent: 0 };
+      }
+
+      if (status === "present") {
+        instrumentsData[instrument].present++;
+      } else if (status === "absent") {
+        instrumentsData[instrument].absent++;
+      }
+    });
+
+    // Créer le tableau HTML
+    let tableHtml = `
+    <h1>Rapport ${formatDate(now)}</h1>
+    <table border="1">
+      <tr>
+        <th>Instrument</th>
+        <th>Présent</th>
+        <th>Absent</th>
+      </tr>`;
+
+    for (const instrument in instrumentsData) {
+      const { present, absent } = instrumentsData[instrument];
+      tableHtml += `<tr>
+        <td>${instrument}</td>
+        <td>${present}</td>
+        <td>${absent}</td>
+      </tr>`;
+    }
+
+    tableHtml += "</table>";
+
+    res.send(tableHtml);
+  } catch (error) {
+    console.error("Erreur lors de la récupération des données : ", error);
+    res
+      .status(500)
+      .json({ message: "Erreur lors de la récupération des données" });
+  }
+});
 /**15...Noter les membres lors des évaluations */
 module.exports.Evaluer = async_handler(async (req, res) => {
   /**Verifier si le membre existe existe */
@@ -1440,7 +1514,7 @@ module.exports.onResetAll = async_handler(async (req, res) => {
   try {
     const result = await User.updateMany(
       {},
-      { $set: { status: "", heure: null } }
+      { $set: { phoneName: "", status: "", heure: null, phoneType: "" } }
     );
     res.status(200).json({
       message: `Mise à jour réussie de ${result.nModified} documents`,
@@ -1456,7 +1530,7 @@ module.exports.onResetAll = async_handler(async (req, res) => {
 module.exports.onReset = async_handler(async (req, res) => {
   User.updateMany(
     { status: { $in: ["", null] } }, //filtre pour sélectionner les utilisateurs avec isVerified vide ou null
-    { $set: { status: "Absent", heure: "" } } //objet de mise à jour - ici on met le champ isVerified à 'Absent'
+    { $set: { status: "Absent", heure: "Not found" } } //objet de mise à jour - ici on met le champ isVerified à 'Absent'
   )
     .then(() => {
       res.status(200).json({ message: "Mise à jour réussie" });
