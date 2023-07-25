@@ -22,6 +22,7 @@
     "express-async-handler": "^1.2.0",
     "express-rate-limit": "^6.7.0",
     "express-session": "^1.17.3",
+    "express-useragent": "^1.0.15",
     "fedapay": "^1.1.10",
     "gridfs-stream": "^1.1.1",
     "helmet": "^6.0.1",
