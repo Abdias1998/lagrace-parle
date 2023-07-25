@@ -1008,10 +1008,10 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
   }
 
   if (
-    now.getDay() === 2 &&
-    now.getHours() >= 17 &&
-    now.getHours() <= 19 &&
-    now.getMinutes() <= 30
+    now.getDay() === 2
+    // now.getHours() >= 17 &&
+    // now.getHours() <= 19 &&
+    // now.getMinutes() <= 30
   ) {
     // Si la date est un lundi entre 17h et 19h30
 
@@ -1030,9 +1030,9 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
       });
     }
   } else if (
-    now.getDay() === 2 &&
-    now.getHours() >= 19 &&
-    now.getMinutes() > 30
+    now.getDay() === 1
+    // now.getHours() >= 19 &&
+    // now.getMinutes() > 30
     // &&
 
     // now.getHours() >= 23 &&
