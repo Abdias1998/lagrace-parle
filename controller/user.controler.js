@@ -997,14 +997,26 @@ module.exports.receiveTransaction = async_handler(async (req, res) => {
 /**14...Faire une liste de présence */
 module.exports.updateUserStatus = async_handler(async (req, res) => {
   const now = new Date(); // Récupérez la date et l'heure actuelle
-  function formatDate(date) {
-    const day = date.getDate().toString().padStart(2, "0");
-    const month = (date.getMonth() + 1).toString().padStart(2, "0");
-    const year = date.getFullYear().toString();
-    const hours = date.getHours().toString().padStart(2, "0");
-    const minutes = date.getMinutes().toString().padStart(2, "0");
+  // function formatDate(date) {
+  //   const day = date.getDate().toString().padStart(2, "0");
+  //   const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  //   const year = date.getFullYear().toString();
+  //   const hours = date.getHours().toString().padStart(2, "0");
+  //   const minutes = date.getMinutes().toString().padStart(2, "0");
 
-    return `${day}/${month}/${year} - ${hours}:${minutes}`;
+  //   return `${day}/${month}/${year} - ${hours}:${minutes}`;
+  // }
+  function formatDate(date) {
+    const options = {
+      timeZone: "Africa/Porto-Novo", // Fuseau horaire de l'Afrique de l'Ouest (Bénin)
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    };
+
+    return date.toLocaleString("fr-FR", options);
   }
 
   if (now.getDay() === 2 && now.getHours() < 19) {
