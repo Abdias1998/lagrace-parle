@@ -1,14 +1,5 @@
 /* global process */
 
-
-
-
-
-
-
-
-
-
 /* global __dirname */
 const User = require(`../modeles/user`);
 const mongoose = require(`mongoose`);
@@ -440,7 +431,7 @@ module.exports.resetPassword = async_handler(async (req, res) => {
       "Votre mot de passe a été changé avec succès. Veuillez-vous connectez à présent avec le nouveau mot de passe.",
   });
 });
-     
+
 /**5...Mettre à jour le profil au cas ou les informations d'inscription sont mal saisir */
 module.exports.update_profil = async_handler(async (req, res) => {
   const { firstName, lastName, tel, email, instrument, partition } = req.body;
@@ -1017,7 +1008,7 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
   }
 
   if (
-    now.getDay() === 1 &&
+    now.getDay() === 2 &&
     now.getHours() >= 17 &&
     now.getHours() <= 19 &&
     now.getMinutes() <= 30
@@ -1039,7 +1030,7 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
       });
     }
   } else if (
-    now.getDay() === 1 &&
+    now.getDay() === 2 &&
     now.getHours() >= 19 &&
     now.getMinutes() > 30
     // &&
@@ -1151,7 +1142,7 @@ module.exports.sendPdfListe = async_handler(async (req, res) => {
         </tbody>
       </table>
       <p>Date:${formatDate(now)} </p>
-      <p>Signature: </p>
+      <p>Signature du prophète: </p>
     `;
     let user;
     user = await User.findOne({ _id: req.params.id });
@@ -1163,7 +1154,7 @@ module.exports.sendPdfListe = async_handler(async (req, res) => {
       from: `La Grâce Parle <${process.env.USER}>`,
       to: user.email,
       subject:
-        "Liste de présence des utilisateurs de l'application PhilHarmonie La Grâce Parle",
+        "Liste de présence des éléments de la PhilHarmonie La Grâce Parle",
       html: tableHTML, // Ajouter le tableau HTML contenant tous les utilisateurs avec leurs prénoms, noms, heures et statuts dans le corps du message
     };
 
