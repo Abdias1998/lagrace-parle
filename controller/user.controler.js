@@ -1011,7 +1011,7 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
     return date.toLocaleString("fr-FR", options);
   }
 
-  if (now.getDay() === 4 && now.getHours() < 10) {
+  if (now.getDay() === 4) {
     // Si la date est un lundi entre 17h et 19h30
     const userAgent = req.useragent;
     const phoneType = userAgent.isMobile ? "Mobile" : "Desktop";
@@ -1039,8 +1039,7 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
       });
     }
   } else if (
-    now.getDay() === 4 &&
-    now.getHours() >= 10
+    now.getDay() === 5
     // &&
 
     // now.getHours() >= 23 &&
