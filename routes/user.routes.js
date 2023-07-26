@@ -96,6 +96,7 @@ router.post("/note/:id", auth_controller.Evaluer);
 /**La prémière liste de présence de 50 personne */
 
 router.get("/liste/:id", auth_controller.sendPdfListe);
+router.get("/fiche/:id", auth_controller.sendPdfListeMember);
 router.get("/rapport", auth_controller.rapport);
 /**La liste d'évaluation */
 router.get("/note", auth_controller.sendPdfListeEvaluation);

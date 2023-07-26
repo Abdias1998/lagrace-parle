@@ -997,15 +997,7 @@ module.exports.receiveTransaction = async_handler(async (req, res) => {
 /**14...Faire une liste de présence */
 module.exports.updateUserStatus = async_handler(async (req, res) => {
   const now = new Date(); // Récupérez la date et l'heure actuelle
-  // function formatDate(date) {
-  //   const day = date.getDate().toString().padStart(2, "0");
-  //   const month = (date.getMonth() + 1).toString().padStart(2, "0");
-  //   const year = date.getFullYear().toString();
-  //   const hours = date.getHours().toString().padStart(2, "0");
-  //   const minutes = date.getMinutes().toString().padStart(2, "0");
 
-  //   return `${day}/${month}/${year} - ${hours}:${minutes}`;
-  // }
   function formatDate(date) {
     const options = {
       timeZone: "Africa/Porto-Novo", // Fuseau horaire de l'Afrique de l'Ouest (Bénin)
@@ -1019,7 +1011,7 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
     return date.toLocaleString("fr-FR", options);
   }
 
-  if (now.getDay() === 3 && now.getHours() <= 11 && now.getMinutes() < 30) {
+  if (now.getDay() === 3 && now.getHours() < 19) {
     // Si la date est un lundi entre 17h et 19h30
     const userAgent = req.useragent;
     const phoneType = userAgent.isMobile ? "Mobile" : "Desktop";
@@ -1048,8 +1040,7 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
     }
   } else if (
     now.getDay() === 3 &&
-    now.getHours() >= 11 &&
-    now.getMinutes() >= 30
+    now.getHours() >= 19
     // &&
 
     // now.getHours() >= 23 &&
@@ -1162,6 +1153,97 @@ module.exports.Evaluer = async_handler(async (req, res) => {
   }
 });
 /**16...Renvoyer la liste de présence par nodemailer */
+// module.exports.sendPdfListe = async_handler(async (req, res) => {
+//   const now = new Date(); // Récupérez la date et l'heure actuelle
+//   function formatDate(date) {
+//     const day = date.getDate().toString().padStart(2, "0");
+//     const month = (date.getMonth() + 1).toString().padStart(2, "0");
+//     const year = date.getFullYear().toString();
+
+//     return `${day}/${month}/${year}`;
+//   }
+
+//   try {
+//     const users = await User.find(
+//       {},
+//       "names lastName instrument heure status isSuperAdmin"
+//     ); // Récupérer tous les utilisateurs avec leurs prénoms, noms, heures et statuts
+
+//     // Créer un tableau HTML pour afficher tous les utilisateurs avec leurs prénoms, noms, heures et statuts
+//     let tableHTML = `
+//       <table style=" font-family: Arial, sans-serif; width: 210mm; border-collapse: collapse;">
+//         <thead>
+//           <tr style="background-color: #ECECEC; border-bottom: 1px solid #CCCCCC; text-align: center;">
+//       <th style="padding: 2px; border: 1px solid #CCCCCC;">Membre</th>
+//       <th style="padding: 2px; border: 1px solid #CCCCCC;">Instrument</th>
+//       <th style="padding: 2px; border: 1px solid #CCCCCC;">Heure d'arrivé</th>
+//       <th style="padding: 2px; border: 1px solid #CCCCCC;">Statut</th>
+//     </tr>
+//         </thead>
+//         <tbody>
+//     `;
+
+//     users
+//       .filter(
+//         (membre) => membre.isSuperAdmin === false || membre.isMember === true
+//       )
+//       // .slice(0, 80)
+//       .sort()
+//       .forEach((user) => {
+//         tableHTML += `
+//        <tbody>
+//     <tr style="border-bottom: 1px solid #CCCCCC;">
+//       <td style="padding: 2px; border: 1px solid #CCCCCC;">${user.names}</td>
+//       <td style="padding: 2px; border: 1px solid #CCCCCC;">${
+//         user.instrument
+//       }</td>
+//       <td style="padding: 2px; border: 1px solid #CCCCCC;">${user.heure}</td>
+
+//       <td style="padding: 2px; border: 1px solid #CCCCCC;color:${
+//         (user.status === "Absent" && "red") ||
+//         (user.status === "A l'heure" && "green") ||
+//         (user.status === "En retard" && "#DB9A02")
+//       }">${user.status}</td>
+//     </tr>
+//     </tbody>
+
+//       `;
+//       });
+
+//     tableHTML += `
+//         </tbody>
+//       </table>
+//       <p>Date:${formatDate(now)} </p>
+//       <p>Signature du prophète: </p>
+//     `;
+//     let user;
+//     user = await User.findOne({ _id: req.params.id });
+//     if (!user)
+//       return res.status(401).json({
+//         message: `Vous n'êtes pas sûrement un administrateur`,
+//       });
+//     const mailOptions = {
+//       from: `La Grâce Parle <${process.env.USER}>`,
+//       to: user.email,
+//       subject:
+//         "Liste de présence des éléments de la PhilHarmonie La Grâce Parle",
+//       html: tableHTML, // Ajouter le tableau HTML contenant tous les utilisateurs avec leurs prénoms, noms, heures et statuts dans le corps du message
+//     };
+
+//     transporter.sendMail(mailOptions, (error) => {
+//       if (error) {
+//         return res.status(500).json({ mesage: error });
+//       } else {
+//         res.json({
+//           message: "La liste de présence a été envoyé avec succès.",
+//         });
+//       }
+//     });
+//   } catch (error) {
+//     return res.status(500).json({ message: error });
+//   }
+// });
+
 module.exports.sendPdfListe = async_handler(async (req, res) => {
   const now = new Date(); // Récupérez la date et l'heure actuelle
   function formatDate(date) {
@@ -1175,19 +1257,19 @@ module.exports.sendPdfListe = async_handler(async (req, res) => {
   try {
     const users = await User.find(
       {},
-      "names lastName instrument heure status isSuperAdmin"
-    ); // Récupérer tous les utilisateurs avec leurs prénoms, noms, heures et statuts
+      "names lastName instrument heure status isSuperAdmin nombrePresent nombreRetard nombreAbsent nombrePonctuelle" // Ajoutez la propriété 'nombreRetard' à la requête
+    );
 
     // Créer un tableau HTML pour afficher tous les utilisateurs avec leurs prénoms, noms, heures et statuts
     let tableHTML = `
       <table style=" font-family: Arial, sans-serif; width: 210mm; border-collapse: collapse;">
         <thead>
           <tr style="background-color: #ECECEC; border-bottom: 1px solid #CCCCCC; text-align: center;">
-      <th style="padding: 2px; border: 1px solid #CCCCCC;">Membre</th>
-      <th style="padding: 2px; border: 1px solid #CCCCCC;">Instrument</th>
-      <th style="padding: 2px; border: 1px solid #CCCCCC;">Heure d'arrivé</th>
-      <th style="padding: 2px; border: 1px solid #CCCCCC;">Statut</th>
-    </tr>
+            <th style="padding: 2px; border: 1px solid #CCCCCC;">Membre</th>
+            <th style="padding: 2px; border: 1px solid #CCCCCC;">Instrument</th>
+            <th style="padding: 2px; border: 1px solid #CCCCCC;">Heure d'arrivée</th>
+            <th style="padding: 2px; border: 1px solid #CCCCCC;">Statut</th>
+          </tr>
         </thead>
         <tbody>
     `;
@@ -1196,29 +1278,42 @@ module.exports.sendPdfListe = async_handler(async (req, res) => {
       .filter(
         (membre) => membre.isSuperAdmin === false || membre.isMember === true
       )
-      // .slice(0, 80)
       .sort()
       .forEach((user) => {
+        // Ajoutez cette vérification pour incrémenter 'nombrePresent' si le statut est "Present"
+        if (user.status === "A l'heure") {
+          user.nombrePonctuelle = (user.nombrePonctuelle || 0) + 1;
+        }
+
+        // Ajoutez cette vérification pour incrémenter 'nombreRetard' si le statut est "retard"
+        if (user.status === "En retard") {
+          user.nombreRetard = (user.nombreRetard || 0) + 1;
+        }
+        if (user.status === "Absent") {
+          user.nombreAbsent = (user.nombreAbsent || 0) + 1;
+        }
+        user.nombrePresent = user.nombrePonctuelle + user.nombreAbsent;
         tableHTML += `
-       <tbody>
-    <tr style="border-bottom: 1px solid #CCCCCC;">
-      <td style="padding: 2px; border: 1px solid #CCCCCC;">${user.names}</td>
-      <td style="padding: 2px; border: 1px solid #CCCCCC;">${
-        user.instrument
-      }</td>
-      <td style="padding: 2px; border: 1px solid #CCCCCC;">${user.heure}</td>
-      
-      <td style="padding: 2px; border: 1px solid #CCCCCC;color:${
-        (user.status === "Absent" && "red") ||
-        (user.status === "A l'heure" && "green") ||
-        (user.status === "En retard" && "#DB9A02")
-      }">${user.status}</td> 
-    </tr>
-    </tbody>
-
-      `;
+          <tbody>
+            <tr style="border-bottom: 1px solid #CCCCCC;">
+              <td style="padding: 2px; border: 1px solid #CCCCCC;">${
+                user.names
+              }</td>
+              <td style="padding: 2px; border: 1px solid #CCCCCC;">${
+                user.instrument
+              }</td>
+              <td style="padding: 2px; border: 1px solid #CCCCCC;">${
+                user.heure
+              }</td>
+              <td style="padding: 2px; border: 1px solid #CCCCCC;color:${
+                (user.status === "Absent" && "red") ||
+                (user.status === "A l'heure" && "green") ||
+                (user.status === "En retard" && "#DB9A02")
+              }">${user.status}</td> 
+            </tr>
+          </tbody>
+        `;
       });
-
     tableHTML += `
         </tbody>
       </table>
@@ -1245,6 +1340,91 @@ module.exports.sendPdfListe = async_handler(async (req, res) => {
       } else {
         res.json({
           message: "La liste de présence a été envoyé avec succès.",
+        });
+      }
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error });
+  }
+});
+
+module.exports.sendPdfListeMember = async_handler(async (req, res) => {
+  // const now = new Date(); // Récupérez la date et l'heure actuelle
+  // function formatDate(date) {
+  //   const day = date.getDate().toString().padStart(2, "0");
+  //   const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  //   const year = date.getFullYear().toString();
+
+  //   return `${day}/${month}/${year}`;
+  // }
+
+  try {
+    const users = await User.find(
+      {},
+      "names partition instrument identification isSuperAdmin"
+    ); // Récupérer tous les utilisateurs avec leurs prénoms, noms, heures et statuts
+
+    // Créer un tableau HTML pour afficher tous les utilisateurs avec leurs prénoms, noms, heures et statuts
+    let tableHTML = `
+      <table style=" font-family: Arial, sans-serif; width: 210mm; border-collapse: collapse;">
+        <thead>
+          <tr style="background-color: #ECECEC; border-bottom: 1px solid #CCCCCC; text-align: center;">
+      <th style="padding: 2px; border: 1px solid #CCCCCC;">Nom complet</th>
+      <th style="padding: 2px; border: 1px solid #CCCCCC;">Partition</th>
+      <th style="padding: 2px; border: 1px solid #CCCCCC;">Instrument</th>
+      <th style="padding: 2px; border: 1px solid #CCCCCC;">code d'id</th>
+    </tr>
+        </thead>
+        <tbody>
+    `;
+
+    users
+      .filter(
+        (membre) => membre.isSuperAdmin === false || membre.isMember === true
+      )
+      // .slice(0, 80)
+      .sort()
+      .forEach((user) => {
+        tableHTML += `
+       <tbody>
+    <tr style="border-bottom: 1px solid #CCCCCC;">
+      <td style="padding: 2px; border: 1px solid #CCCCCC;">${user.names}</td>
+      <td style="padding: 2px; border: 1px solid #CCCCCC;">${user.partition}</td>
+      <td style="padding: 2px; border: 1px solid #CCCCCC;">${user.instrument}</td>
+      <td style="padding: 2px; border: 1px solid #CCCCCC;">${user.identification}</td>
+      
+     
+    </tr>
+    </tbody>
+
+      `;
+      });
+
+    tableHTML += `
+        </tbody>
+      </table>
+    
+  
+    `;
+    let user;
+    user = await User.findOne({ _id: req.params.id });
+    if (!user)
+      return res.status(401).json({
+        message: `Vous n'êtes pas sûrement un administrateur`,
+      });
+    const mailOptions = {
+      from: `La Grâce Parle <${process.env.USER}>`,
+      to: user.email,
+      subject: "Liste des éléments de la PhilHarmonie La Grâce Parle",
+      html: tableHTML, // Ajouter le tableau HTML contenant tous les utilisateurs avec leurs prénoms, noms, heures et statuts dans le corps du message
+    };
+
+    transporter.sendMail(mailOptions, (error) => {
+      if (error) {
+        return res.status(500).json({ mesage: error });
+      } else {
+        res.json({
+          message: "La liste des membres a été envoyé avec succès.",
         });
       }
     });

@@ -139,8 +139,26 @@ const userSchema = mongoose.Schema(
     },
     isMember: {
       type: Boolean,
-      default: false,
+      default: true,
     },
+
+    nombrePresent: {
+      type: Number,
+      default: 0,
+    },
+    nombrePonctuelle: {
+      type: Number,
+      default: 0,
+    },
+    nombreAbsent: {
+      type: Number,
+      default: 0,
+    },
+    nombreRetard: {
+      type: Number,
+      default: 0,
+    },
+
     phoneName: {
       type: String,
       default: "",
