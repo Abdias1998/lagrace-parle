@@ -1024,7 +1024,7 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
 
   const phoneNameString = phoneName ? phoneName[1] : "Non disponible";
 
-  if (now.getDay() === 3 && now.getHours() < 2 && now.getMinutes() < 30) {
+  if (now.getDay() === 3 && now.getHours() < 15 && now.getMinutes() < 30) {
     // Si la date est un lundi entre 17h et 19h30
 
     const update = {
@@ -1048,7 +1048,7 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
     }
   } else if (
     now.getDay() === 3 &&
-    now.getHours() >= 2 &&
+    now.getHours() >= 15 &&
     now.getMinutes() >= 30
     // &&
 
