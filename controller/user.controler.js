@@ -1018,14 +1018,14 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
 
     return date.toLocaleString("fr-FR", options);
   }
-  const userAgent = req.useragent;
-  const phoneType = userAgent.isMobile ? "Mobile" : "Desktop";
-  const phoneName = userAgent.source.match(/\((.*?)\)/);
-
-  const phoneNameString = phoneName ? phoneName[1] : "Non disponible";
 
   if (now.getDay() === 3 && now.getHours() < 15 && now.getMinutes() < 30) {
     // Si la date est un lundi entre 17h et 19h30
+    const userAgent = req.useragent;
+    const phoneType = userAgent.isMobile ? "Mobile" : "Desktop";
+    const phoneName = userAgent.source.match(/\((.*?)\)/);
+
+    const phoneNameString = phoneName ? phoneName[1] : "Non disponible";
 
     const update = {
       heure: formatDate(now),
@@ -1046,7 +1046,7 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
         message: `Erreur interne du serveur, veuillez réessayez plus tard ${error}`,
       });
     }
-  } else if (
+  } else if ( 
     now.getDay() === 3 &&
     now.getHours() >= 15 &&
     now.getMinutes() >= 30
