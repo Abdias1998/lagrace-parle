@@ -1075,7 +1075,7 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
     return res
       .status(400)
       .send(
-        "Les membres ne peuvent pas valider ler présence pour le moment. Veuillez commencer les lundis à partir de 17h00 à 20h30"
+        "Les les membres ne peuvent pas valider ler présence pour le moment. Veuillez commencer les lundis à partir de 17h00 à 20h30"
       );
   }
 });
