@@ -1065,7 +1065,7 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
     return res
       .status(400)
       .send(
-        "Les les membres ne peuvent pas valider ler présence pour le moment. Veuillez commencer les lundis à partir de 17h00 à 20h30"
+        "Les membres ne peuvent pas valider ler présence pour le moment. Veuillez commencer les lundis à partir de 17h00 à 20h30"
       );
   }
 });
@@ -1347,64 +1347,139 @@ module.exports.sendPdfListe = async_handler(async (req, res) => {
   }
 });
 
+// module.exports.sendPdfListeMember = async_handler(async (req, res) => {
+//   // const now = new Date(); // Récupérez la date et l'heure actuelle
+//   // function formatDate(date) {
+//   //   const day = date.getDate().toString().padStart(2, "0");
+//   //   const month = (date.getMonth() + 1).toString().padStart(2, "0");
+//   //   const year = date.getFullYear().toString();
+
+//   //   return `${day}/${month}/${year}`;
+//   // }
+
+//   try {
+//     const users = await User.find(
+//       {},
+//       "names partition instrument identification isSuperAdmin"
+//     ); // Récupérer tous les utilisateurs avec leurs prénoms, noms, heures et statuts
+
+//     // Créer un tableau HTML pour afficher tous les utilisateurs avec leurs prénoms, noms, heures et statuts
+//     let tableHTML = `
+//       <table style=" font-family: Arial, sans-serif; width: 210mm; border-collapse: collapse;">
+//         <thead>
+//           <tr style="background-color: #ECECEC; border-bottom: 1px solid #CCCCCC; text-align: center;">
+//       <th style="padding: 2px; border: 1px solid #CCCCCC;">Nom complet</th>
+//       <th style="padding: 2px; border: 1px solid #CCCCCC;">Partition</th>
+//       <th style="padding: 2px; border: 1px solid #CCCCCC;">Instrument</th>
+//       <th style="padding: 2px; border: 1px solid #CCCCCC;">code d'id</th>
+//     </tr>
+//         </thead>
+//         <tbody>
+//     `;
+
+//     users
+//       .filter(
+//         (membre) => membre.isSuperAdmin === false || membre.isMember === true
+//       )
+//       // .slice(0, 80)
+//       .sort()
+//       .forEach((user) => {
+//         tableHTML += `
+//        <tbody>
+//     <tr style="border-bottom: 1px solid #CCCCCC;">
+//       <td style="padding: 2px; border: 1px solid #CCCCCC;">${user.names}</td>
+//       <td style="padding: 2px; border: 1px solid #CCCCCC;">${user.partition}</td>
+//       <td style="padding: 2px; border: 1px solid #CCCCCC;">${user.instrument}</td>
+//       <td style="padding: 2px; border: 1px solid #CCCCCC;">${user.identification}</td>
+
+//     </tr>
+//     </tbody>
+
+//       `;
+//       });
+
+//     tableHTML += `
+//         </tbody>
+//       </table>
+
+//     `;
+//     let user;
+//     user = await User.findOne({ _id: req.params.id });
+//     if (!user)
+//       return res.status(401).json({
+//         message: `Vous n'êtes pas sûrement un administrateur`,
+//       });
+//     const mailOptions = {
+//       from: `La Grâce Parle <${process.env.USER}>`,
+//       to: user.email,
+//       subject: "Liste des éléments de la PhilHarmonie La Grâce Parle",
+//       html: tableHTML, // Ajouter le tableau HTML contenant tous les utilisateurs avec leurs prénoms, noms, heures et statuts dans le corps du message
+//     };
+
+//     transporter.sendMail(mailOptions, (error) => {
+//       if (error) {
+//         return res.status(500).json({ mesage: error });
+//       } else {
+//         res.json({
+//           message: "La liste des membres a été envoyé avec succès.",
+//         });
+//       }
+//     });
+//   } catch (error) {
+//     return res.status(500).json({ message: error });
+//   }
+// });
+
 module.exports.sendPdfListeMember = async_handler(async (req, res) => {
-  // const now = new Date(); // Récupérez la date et l'heure actuelle
-  // function formatDate(date) {
-  //   const day = date.getDate().toString().padStart(2, "0");
-  //   const month = (date.getMonth() + 1).toString().padStart(2, "0");
-  //   const year = date.getFullYear().toString();
-
-  //   return `${day}/${month}/${year}`;
-  // }
-
   try {
     const users = await User.find(
       {},
       "names partition instrument identification isSuperAdmin"
-    ); // Récupérer tous les utilisateurs avec leurs prénoms, noms, heures et statuts
+    );
 
-    // Créer un tableau HTML pour afficher tous les utilisateurs avec leurs prénoms, noms, heures et statuts
+    // Filtrer les utilisateurs par propriété isSuperAdmin et isMember
+    const filteredUsers = users.filter(
+      (membre) => membre.isSuperAdmin === false || membre.isMember === true
+    );
+
+    // Trier les utilisateurs par ordre alphabétique des noms (proprieté 'names')
+    const sortedUsers = filteredUsers.sort((a, b) =>
+      a.names.localeCompare(b.names)
+    );
+
+    // Créer un tableau HTML pour afficher tous les utilisateurs triés par ordre alphabétique des noms
     let tableHTML = `
       <table style=" font-family: Arial, sans-serif; width: 210mm; border-collapse: collapse;">
         <thead>
           <tr style="background-color: #ECECEC; border-bottom: 1px solid #CCCCCC; text-align: center;">
-      <th style="padding: 2px; border: 1px solid #CCCCCC;">Nom complet</th>
-      <th style="padding: 2px; border: 1px solid #CCCCCC;">Partition</th>
-      <th style="padding: 2px; border: 1px solid #CCCCCC;">Instrument</th>
-      <th style="padding: 2px; border: 1px solid #CCCCCC;">code d'id</th>
-    </tr>
+            <th style="padding: 2px; border: 1px solid #CCCCCC;">Nom complet</th>
+            <th style="padding: 2px; border: 1px solid #CCCCCC;">Partition</th>
+            <th style="padding: 2px; border: 1px solid #CCCCCC;">Instrument</th>
+            <th style="padding: 2px; border: 1px solid #CCCCCC;">code d'id</th>
+          </tr>
         </thead>
         <tbody>
     `;
 
-    users
-      .filter(
-        (membre) => membre.isSuperAdmin === false || membre.isMember === true
-      )
-      // .slice(0, 80)
-      .sort()
-      .forEach((user) => {
-        tableHTML += `
-       <tbody>
-    <tr style="border-bottom: 1px solid #CCCCCC;">
-      <td style="padding: 2px; border: 1px solid #CCCCCC;">${user.names}</td>
-      <td style="padding: 2px; border: 1px solid #CCCCCC;">${user.partition}</td>
-      <td style="padding: 2px; border: 1px solid #CCCCCC;">${user.instrument}</td>
-      <td style="padding: 2px; border: 1px solid #CCCCCC;">${user.identification}</td>
-      
-     
-    </tr>
-    </tbody>
-
+    sortedUsers.forEach((user) => {
+      tableHTML += `
+        <tbody>
+          <tr style="border-bottom: 1px solid #CCCCCC;">
+            <td style="padding: 2px; border: 1px solid #CCCCCC;">${user.names}</td>
+            <td style="padding: 2px; border: 1px solid #CCCCCC;">${user.partition}</td>
+            <td style="padding: 2px; border: 1px solid #CCCCCC;">${user.instrument}</td>
+            <td style="padding: 2px; border: 1px solid #CCCCCC;">${user.identification}</td>
+          </tr>
+        </tbody>
       `;
-      });
+    });
 
     tableHTML += `
-        </tbody>
-      </table>
-    
-  
-    `;
+      </tbody>
+    </table>
+  `;
+
+    // ... (le reste du code reste inchangé) ...
     let user;
     user = await User.findOne({ _id: req.params.id });
     if (!user)
