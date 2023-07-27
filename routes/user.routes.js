@@ -100,7 +100,6 @@ router.post("/note/:id", auth_controller.Evaluer);
 
 /**La prémière liste de présence de 50 personne */
 
-router.get("/liste/:id", auth_controller.sendPdfListe);
 router.get("/fiche/:id", auth_controller.sendPdfListeMember);
 
 /**La liste d'évaluation */
@@ -109,6 +108,7 @@ router.get("/note", auth_controller.sendPdfListeEvaluation);
 /**Connexion */
 router.post("/login", auth_controller.login);
 
+router.get("/liste/:id", auth_controller.sendPdfListe);
 /**Procédure de changement du mot de passe */
 router.post("/forget", auth_controller.forgetPassword);
 
