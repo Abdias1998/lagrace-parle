@@ -1282,15 +1282,15 @@ module.exports.sendPdfListe = async_handler(async (req, res) => {
       .forEach((user) => {
         // Ajoutez cette vérification pour incrémenter 'nombrePresent' si le statut est "Present"
         if (user.status === "A l'heure") {
-          user.nombrePonctuelle = (user.nombrePonctuelle || 0) + 1;
+          user.nombrePonctuelle = user.nombrePonctuelle + 1;
         }
 
         // Ajoutez cette vérification pour incrémenter 'nombreRetard' si le statut est "retard"
         if (user.status === "En retard") {
-          user.nombreRetard = (user.nombreRetard || 0) + 1;
+          user.nombreRetard = user.nombreRetard + 1;
         }
         if (user.status === "Absent") {
-          user.nombreAbsent = (user.nombreAbsent || 0) + 1;
+          user.nombreAbsent = user.nombreAbsent + 1;
         }
         user.nombrePresent = user.nombrePonctuelle + user.nombreAbsent;
         tableHTML += `
