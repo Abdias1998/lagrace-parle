@@ -90,6 +90,11 @@ router.post(
   middleware.verifyToken,
   auth_controller.updateUserStatus
 );
+router.post(
+  "/permission/:userId",
+  middleware.verifyToken,
+  auth_controller.permissionnaire
+);
 /**Evaluer les membres */
 router.post("/note/:id", auth_controller.Evaluer);
 

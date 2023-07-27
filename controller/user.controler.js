@@ -993,7 +993,24 @@ module.exports.receiveTransaction = async_handler(async (req, res) => {
       .json({ message: "Erreur interne du serveur" + error });
   }
 }); //No unsed in the app web
-
+/**Permissonnaire */
+module.exports.permissionnaire = async_handler(async (req, res) => {
+  const update = {
+    status: "Permissionnaire",
+  };
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      req.params.userId,
+      update,
+      { new: true }
+    );
+    return res.status(200).json(updatedUser);
+  } catch (error) {
+    res.status(500).json({
+      message: `Erreur interne du serveur, veuillez réessayez plus tard ${error}`,
+    });
+  }
+});
 /**14...Faire une liste de présence */
 module.exports.updateUserStatus = async_handler(async (req, res) => {
   const now = new Date(); // Récupérez la date et l'heure actuelle
@@ -1010,11 +1027,21 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
 
     return date.toLocaleString("fr-FR", options);
   }
+  let userType;
+  const { idType } = req.body;
+  try {
+    userType = await User.findById(idType);
+  } catch (err) {
+    return res.status(400).json({ message: "Veuillez réessayez plus tard" });
+  }
 
-  if (now.getDay() === 4 && now.getHours() < 2) {
+  if (now.getDay() === 4 && now.getHours() <= 19) {
     // Si la date est un lundi entre 17h et 19h30
+
     const userAgent = req.useragent;
-    const phoneType = userAgent.isMobile ? "Mobile" : "Desktop";
+    const phoneType = userAgent.isMobile
+      ? `Mobile by ${userType.names}`
+      : `Desktop by ${userType.names}`;
     const phoneName = userAgent.source.match(/\((.*?)\)/);
 
     const phoneNameString = phoneName ? phoneName[1] : "Non disponible";
@@ -1039,8 +1066,8 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
       });
     }
   } else if (
-    now.getDay() === 5 &&
-    now.getHours >= 2
+    now.getDay() === 4 &&
+    now.getHours >= 19
     // &&
 
     // now.getHours() >= 23 &&
@@ -1308,7 +1335,9 @@ module.exports.sendPdfListe = async_handler(async (req, res) => {
               <td style="padding: 2px; border: 1px solid #CCCCCC;color:${
                 (user.status === "Absent" && "red") ||
                 (user.status === "A l'heure" && "green") ||
-                (user.status === "En retard" && "#DB9A02")
+                (user.status === "En retard" && "#DB9A02")(
+                  user.status === "Permissionnaire" && "orange"
+                )
               }">${user.status}</td> 
             </tr>
           </tbody>
@@ -1456,7 +1485,7 @@ module.exports.sendPdfListeMember = async_handler(async (req, res) => {
             <th style="padding: 2px; border: 1px solid #CCCCCC;">Nom complet</th>
             <th style="padding: 2px; border: 1px solid #CCCCCC;">Partition</th>
             <th style="padding: 2px; border: 1px solid #CCCCCC;">Instrument</th>
-            <th style="padding: 2px; border: 1px solid #CCCCCC;">code d'id</th>
+            <th style="padding: 2px; border: 1px solid #CCCCCC;">Code d'id</th>
           </tr>
         </thead>
         <tbody>
