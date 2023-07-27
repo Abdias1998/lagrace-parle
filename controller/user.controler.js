@@ -997,6 +997,7 @@ module.exports.receiveTransaction = async_handler(async (req, res) => {
 module.exports.permissionnaire = async_handler(async (req, res) => {
   const update = {
     status: "Permissionnaire",
+    heure: "Not found",
   };
   try {
     const updatedUser = await User.findByIdAndUpdate(
@@ -1004,7 +1005,7 @@ module.exports.permissionnaire = async_handler(async (req, res) => {
       update,
       { new: true }
     );
-    return res.status(200).json(updatedUser);
+    return res.status(200).json({ message: "Mise a jour" });
   } catch (error) {
     res.status(500).json({
       message: `Erreur interne du serveur, veuillez réessayez plus tard ${error}`,
@@ -1027,21 +1028,12 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
 
     return date.toLocaleString("fr-FR", options);
   }
-  let userType;
-  const { idType } = req.body;
-  try {
-    userType = await User.findById(idType);
-  } catch (err) {
-    return res.status(400).json({ message: "Veuillez réessayez plus tard" });
-  }
 
   if (now.getDay() === 4 && now.getHours() <= 19) {
     // Si la date est un lundi entre 17h et 19h30
 
     const userAgent = req.useragent;
-    const phoneType = userAgent.isMobile
-      ? `Mobile by ${userType.names}`
-      : `Desktop by ${userType.names}`;
+    const phoneType = userAgent.isMobile ? `Mobile ` : `Desktop`;
     const phoneName = userAgent.source.match(/\((.*?)\)/);
 
     const phoneNameString = phoneName ? phoneName[1] : "Non disponible";
@@ -1059,7 +1051,7 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
         update,
         { new: true }
       );
-      return res.status(200).json(updatedUser);
+      return res.status(200).json({ message: "Mise à jour" });
     } catch (error) {
       res.status(500).json({
         message: `Erreur interne du serveur, veuillez réessayez plus tard ${error}`,
@@ -1083,7 +1075,7 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
         update,
         { new: true }
       );
-      return res.status(200).json(updatedUser);
+      return res.status(200).json({ message: "Mise à jour " });
     } catch (error) {
       return res.status(500).json({
         message: `Erreur interne du serveur, veuillez réessayez plus tard ${error}`,
@@ -1097,71 +1089,7 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
       );
   }
 });
-module.exports.rapport = async_handler(async (req, res) => {
-  const now = new Date();
-  function formatDate(date) {
-    const options = {
-      timeZone: "Africa/Porto-Novo", // Fuseau horaire de l'Afrique de l'Ouest (Bénin)
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    };
 
-    return date.toLocaleString("fr-FR", options);
-  }
-  try {
-    // Récupérer les données des membres depuis la base de données
-    const membres = await User.find();
-
-    // Initialiser les compteurs pour les status "présent" et "absent" pour chaque instrument
-    const instrumentsData = {};
-
-    // Parcourir les membres et compter les status pour chaque instrument
-    membres.forEach((membre) => {
-      const { instrument, status } = membre;
-
-      if (!instrumentsData[instrument]) {
-        instrumentsData[instrument] = { present: 0, absent: 0 };
-      }
-
-      if (status === "present") {
-        instrumentsData[instrument].present++;
-      } else if (status === "absent") {
-        instrumentsData[instrument].absent++;
-      }
-    });
-
-    // Créer le tableau HTML
-    let tableHtml = `
-    <h1>Rapport ${formatDate(now)}</h1>
-    <table border="1">
-      <tr>
-        <th>Instrument</th>
-        <th>Présent</th>
-        <th>Absent</th>
-      </tr>`;
-
-    for (const instrument in instrumentsData) {
-      const { present, absent } = instrumentsData[instrument];
-      tableHtml += `<tr>
-        <td>${instrument}</td>
-        <td>${present}</td>
-        <td>${absent}</td>
-      </tr>`;
-    }
-
-    tableHtml += "</table>";
-
-    res.send(tableHtml);
-  } catch (error) {
-    console.error("Erreur lors de la récupération des données : ", error);
-    res
-      .status(500)
-      .json({ message: "Erreur lors de la récupération des données" });
-  }
-});
 /**15...Noter les membres lors des évaluations */
 module.exports.Evaluer = async_handler(async (req, res) => {
   /**Verifier si le membre existe existe */
@@ -1179,97 +1107,6 @@ module.exports.Evaluer = async_handler(async (req, res) => {
       .json({ message: `Erreur interne du serveur ${error}` });
   }
 });
-/**16...Renvoyer la liste de présence par nodemailer */
-// module.exports.sendPdfListe = async_handler(async (req, res) => {
-//   const now = new Date(); // Récupérez la date et l'heure actuelle
-//   function formatDate(date) {
-//     const day = date.getDate().toString().padStart(2, "0");
-//     const month = (date.getMonth() + 1).toString().padStart(2, "0");
-//     const year = date.getFullYear().toString();
-
-//     return `${day}/${month}/${year}`;
-//   }
-
-//   try {
-//     const users = await User.find(
-//       {},
-//       "names lastName instrument heure status isSuperAdmin"
-//     ); // Récupérer tous les utilisateurs avec leurs prénoms, noms, heures et statuts
-
-//     // Créer un tableau HTML pour afficher tous les utilisateurs avec leurs prénoms, noms, heures et statuts
-//     let tableHTML = `
-//       <table style=" font-family: Arial, sans-serif; width: 210mm; border-collapse: collapse;">
-//         <thead>
-//           <tr style="background-color: #ECECEC; border-bottom: 1px solid #CCCCCC; text-align: center;">
-//       <th style="padding: 2px; border: 1px solid #CCCCCC;">Membre</th>
-//       <th style="padding: 2px; border: 1px solid #CCCCCC;">Instrument</th>
-//       <th style="padding: 2px; border: 1px solid #CCCCCC;">Heure d'arrivé</th>
-//       <th style="padding: 2px; border: 1px solid #CCCCCC;">Statut</th>
-//     </tr>
-//         </thead>
-//         <tbody>
-//     `;
-
-//     users
-//       .filter(
-//         (membre) => membre.isSuperAdmin === false || membre.isMember === true
-//       )
-//       // .slice(0, 80)
-//       .sort()
-//       .forEach((user) => {
-//         tableHTML += `
-//        <tbody>
-//     <tr style="border-bottom: 1px solid #CCCCCC;">
-//       <td style="padding: 2px; border: 1px solid #CCCCCC;">${user.names}</td>
-//       <td style="padding: 2px; border: 1px solid #CCCCCC;">${
-//         user.instrument
-//       }</td>
-//       <td style="padding: 2px; border: 1px solid #CCCCCC;">${user.heure}</td>
-
-//       <td style="padding: 2px; border: 1px solid #CCCCCC;color:${
-//         (user.status === "Absent" && "red") ||
-//         (user.status === "A l'heure" && "green") ||
-//         (user.status === "En retard" && "#DB9A02")
-//       }">${user.status}</td>
-//     </tr>
-//     </tbody>
-
-//       `;
-//       });
-
-//     tableHTML += `
-//         </tbody>
-//       </table>
-//       <p>Date:${formatDate(now)} </p>
-//       <p>Signature du prophète: </p>
-//     `;
-//     let user;
-//     user = await User.findOne({ _id: req.params.id });
-//     if (!user)
-//       return res.status(401).json({
-//         message: `Vous n'êtes pas sûrement un administrateur`,
-//       });
-//     const mailOptions = {
-//       from: `La Grâce Parle <${process.env.USER}>`,
-//       to: user.email,
-//       subject:
-//         "Liste de présence des éléments de la PhilHarmonie La Grâce Parle",
-//       html: tableHTML, // Ajouter le tableau HTML contenant tous les utilisateurs avec leurs prénoms, noms, heures et statuts dans le corps du message
-//     };
-
-//     transporter.sendMail(mailOptions, (error) => {
-//       if (error) {
-//         return res.status(500).json({ mesage: error });
-//       } else {
-//         res.json({
-//           message: "La liste de présence a été envoyé avec succès.",
-//         });
-//       }
-//     });
-//   } catch (error) {
-//     return res.status(500).json({ message: error });
-//   }
-// });
 
 module.exports.sendPdfListe = async_handler(async (req, res) => {
   const now = new Date(); // Récupérez la date et l'heure actuelle
