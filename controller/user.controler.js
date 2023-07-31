@@ -1000,11 +1000,7 @@ module.exports.permissionnaire = async_handler(async (req, res) => {
     heure: "Not found",
   };
   try {
-    const updatedUser = await User.findByIdAndUpdate(
-      req.params.userId,
-      update,
-      { new: true }
-    );
+    await User.findByIdAndUpdate(req.params.userId, update, { new: true });
     return res.status(200).json({ message: "Mise a jour" });
   } catch (error) {
     res.status(500).json({
@@ -1029,7 +1025,7 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
     return date.toLocaleString("fr-FR", options);
   }
 
-  if (now.getDay() === 4 && now.getHours() <= 19) {
+  if (now.getDay() === 1 && now.getHours() < 19) {
     // Si la date est un lundi entre 17h et 19h30
 
     const userAgent = req.useragent;
@@ -1046,11 +1042,7 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
     };
 
     try {
-      const updatedUser = await User.findByIdAndUpdate(
-        req.params.userId,
-        update,
-        { new: true }
-      );
+      await User.findByIdAndUpdate(req.params.userId, update, { new: true });
       return res.status(200).json({ message: "Mise à jour" });
     } catch (error) {
       res.status(500).json({
@@ -1058,7 +1050,7 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
       });
     }
   } else if (
-    now.getDay() === 4 &&
+    now.getDay() === 1 &&
     now.getHours >= 19
     // &&
 
@@ -1070,11 +1062,7 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
     const update = { heure: formatDate(now), status: "En retard" };
 
     try {
-      const updatedUser = await User.findByIdAndUpdate(
-        req.params.userId,
-        update,
-        { new: true }
-      );
+      await User.findByIdAndUpdate(req.params.userId, update, { new: true });
       return res.status(200).json({ message: "Mise à jour " });
     } catch (error) {
       return res.status(500).json({
