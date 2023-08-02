@@ -1055,7 +1055,7 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
       });
     }
   } else if (
-    now.getDay() === 1 &&
+    now.getDay() === 3 &&
     now.getHours() >= 12 &&
     now.getHours() <= 13
   ) {
