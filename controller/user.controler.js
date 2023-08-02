@@ -1107,8 +1107,8 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
     const update = {
       heure: formatDate(now),
       status: "A l'heure",
-      phoneType: phoneType,
-      phoneName: phoneNameString,
+      // phoneType: phoneType,
+      // phoneName: phoneNameString,
     };
 
     try {
