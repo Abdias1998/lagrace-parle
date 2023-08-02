@@ -1092,7 +1092,7 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
 
   if (
     now.getDay() === 3 &&
-    now.getHours() === 11 &&
+    now.getHours() === 16 &&
     now.getMinutes() >= 0 &&
     now.getMinutes() <= 59
   ) {
@@ -1121,8 +1121,8 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
     }
   } else if (
     now.getDay() === 3 &&
-    now.getHours() >= 12 &&
-    now.getHours() <= 13
+    now.getHours() >= 17 &&
+    now.getHours() <= 18
   ) {
     // Si la date est un lundi entre 19h00 et 20h59
 
@@ -1244,7 +1244,7 @@ module.exports.sendPdfListe = async_handler(async (req, res) => {
 
     transporter.sendMail(mailOptions, (error) => {
       if (error) {
-        return res.status(500).json({ mesage: error });
+        return res.status(500).json({ message: error });
       } else {
         res.json({
           message: "La liste de présence a été envoyé avec succès.",
@@ -1327,7 +1327,7 @@ module.exports.sendPdfListe = async_handler(async (req, res) => {
 
 //     transporter.sendMail(mailOptions, (error) => {
 //       if (error) {
-//         return res.status(500).json({ mesage: error });
+//         return res.status(500).json({ message: error });
 //       } else {
 //         res.json({
 //           message: "La liste des membres a été envoyé avec succès.",
@@ -1404,7 +1404,7 @@ module.exports.sendPdfListeMember = async_handler(async (req, res) => {
 
     transporter.sendMail(mailOptions, (error) => {
       if (error) {
-        return res.status(500).json({ mesage: error });
+        return res.status(500).json({ message: error });
       } else {
         res.json({
           message: "La liste des membres a été envoyé avec succès.",
@@ -1476,7 +1476,7 @@ module.exports.sendPdfListeEvaluation = async_handler(async (req, res) => {
 
     transporter.sendMail(mailOptions, (error) => {
       if (error) {
-        res.status(500).json({ mesage: error });
+        res.status(500).json({ message: error });
       } else {
         return res.status(200).json({
           message:
