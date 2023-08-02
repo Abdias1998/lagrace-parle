@@ -107,7 +107,7 @@ router.get("/note", auth_controller.sendPdfListeEvaluation);
 /**Connexion */
 router.post("/login", auth_controller.login);
 
-router.get("/liste/:id", auth_controller.sendPdfListe);
+router.get("/liste", middleware.verifyToken, auth_controller.sendPdfListe);
 /**Procédure de changement du mot de passe */
 router.post("/forget", auth_controller.forgetPassword);
 

@@ -134,11 +134,11 @@ module.exports.register = async_handler(async (req, res) => {
 
   function isSanguinActive() {
     if (sanguin !== "")
-      return `<div>
+      return `
       <p>Son groupe sanguin est ${sanguin}</p>
       <a href=${process.env.CLIENT_URL}> Consulter le site web</a>
       <a tel:${process.env.TEL_PROPH}> Appeler ce numéros en cas de perte</a>
-      </div>`;
+      `;
     else
       return `<div>
       <a href=${process.env.CLIENT_URL}> Consulter le site web</a>
@@ -232,6 +232,71 @@ module.exports.register = async_handler(async (req, res) => {
 
       return res.status(201).json({
         message: `Inscription réussie.Nous venons d'envoyer votre numéro d'identification personnele à 4 chiffre à votre adresse mail que vous pouvez consulter`,
+      });
+    });
+  } catch (error) {
+    res.status(403).json({
+      message: `Erreur interne du serveur, veuillez réessayer plus tard`,
+    });
+  }
+});
+
+/***Crer une fonction pour les codes qr */
+module.exports.codeQr = async_handler(async (req, res) => {
+  /**Verifiez si l'user existe */
+  let user;
+  const id = req.params.id;
+  try {
+    user = await User.findById(id);
+  } catch (error) {
+    return res.status(500).json({ message: error });
+  }
+
+  if (!user) return res.status(400).json({ message: `Non authorisé` });
+  function IsManOrWife() {
+    if (user?.sexe === "Masculin") return "Mr";
+    else return "Mme";
+  }
+  function isSanguinActive() {
+    if (user.sanguin !== "")
+      return `
+    Son groupe sanguin est ${user.sanguin}.
+    Appeler ce numéros en cas de perte ${process.env.TEL_PROPH}
+      `;
+    else
+      return `
+    Appeler ce numéros en cas de perte ${process.env.TEL_PROPH}
+      `;
+  }
+  const data = `${IsManOrWife()} ${setAllMajWords(
+    true,
+    user.firstName
+  )} ${setAllMajWords(
+    true,
+    user.lastName
+  )} est membre du groupe PhilHarmonie La Grâce Parle, il joue au ${
+    user.instrument
+  }. ${isSanguinActive()}
+ `;
+  try {
+    qrCode.toDataURL(data, async (err, url) => {
+      if (err)
+        return res.status(500).json({
+          message: "Erreur interne du serveur, veuillez réessayer plus tard",
+        });
+
+      /**Enregister user dans la base de donnée */
+      // const user = await new User({
+
+      //   qrCode: url,
+      // });
+      // user.save(); /**Enrégister l'utilisateur dans la bd */
+      await user.updateOne({
+        qrCode: url,
+      });
+
+      return res.status(201).json({
+        message: `Qr code enrégister`,
       });
     });
   } catch (error) {
@@ -1111,7 +1176,7 @@ module.exports.sendPdfListe = async_handler(async (req, res) => {
   try {
     const users = await User.find(
       {},
-      "names lastName instrument heure status isSuperAdmin nombrePresent nombreRetard nombreAbsent nombrePonctuelle" // Ajoutez la propriété 'nombreRetard' à la requête
+      "names lastName instrument heure status isSuperAdmin " // Ajoutez la propriété 'nombreRetard' à la requête
     );
 
     // Créer un tableau HTML pour afficher tous les utilisateurs avec leurs prénoms, noms, heures et statuts
@@ -1163,15 +1228,15 @@ module.exports.sendPdfListe = async_handler(async (req, res) => {
       <p>Date:${formatDate(now)} </p>
       <p>Signature du prophète: </p>
     `;
-    let user;
-    user = await User.findOne({ _id: req.params.id });
-    if (!user)
-      return res.status(401).json({
-        message: `Vous n'êtes pas sûrement un administrateur`,
-      });
+    // let user;
+    // user = await User.findOne({ _id: req.params.id });
+    // if (!user)
+    //   return res.status(401).json({
+    //     message: `Vous n'êtes pas sûrement un administrateur`,
+    //   });
     const mailOptions = {
       from: `La Grâce Parle <${process.env.USER}>`,
-      to: user.email,
+      to: process.env.USER,
       subject:
         "Liste de présence des éléments de la PhilHarmonie La Grâce Parle",
       html: tableHTML, // Ajouter le tableau HTML contenant tous les utilisateurs avec leurs prénoms, noms, heures et statuts dans le corps du message
