@@ -228,7 +228,8 @@ app.use("/api/posts", postRoute);
 app.use("/api/calendar", calendarRoute);
 app.use("/api/exercices", ExerciceRoute);
 app.use("/api/picture", ImageRoute);
-
+const now = new Date();
+console.log(now.getHours());
 app.listen(port || 7500, () =>
   console.log(`Le serveur est démarrer sur le port ${port}`)
 );
