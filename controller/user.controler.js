@@ -1119,12 +1119,11 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
         message: `Erreur interne du serveur, veuillez réessayer plus tard ${error}`,
       });
     }
-  }
-  //   now.getDay() === 3 &&
-  //   now.getHours() >= 19 &&
-  //   now.getHours() <= 20
-  // )
-  else {
+  } else if (
+    now.getDay() === 3 &&
+    now.getHours() >= 21 &&
+    now.getHours() <= 22
+  ) {
     // Si la date est un lundi entre 19h00 et 20h59
 
     const update = { heure: formatDate(now), status: "En retard" };
@@ -1137,14 +1136,13 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
         message: `Erreur interne du serveur, veuillez réessayer plus tard ${error}`,
       });
     }
+  } else {
+    return res
+      .status(400)
+      .send(
+        "Les membres ne peuvent pas valider leur présence pour le moment. Veuillez commencer les lundis à partir de 18h00 à 20h59"
+      );
   }
-  // else {
-  //   return res
-  //     .status(400)
-  //     .send(
-  //       "Les membres ne peuvent pas valider leur présence pour le moment. Veuillez commencer les lundis à partir de 18h00 à 20h59"
-  //     );
-  // }
 });
 
 /**15...Noter les membres lors des évaluations */
@@ -1216,9 +1214,8 @@ module.exports.sendPdfListe = async_handler(async (req, res) => {
               <td style="padding: 2px; border: 1px solid #CCCCCC;color:${
                 (user.status === "Absent" && "red") ||
                 (user.status === "A l'heure" && "green") ||
-                (user.status === "En retard" && "#DB9A02")(
-                  user.status === "Permissionnaire" && "orange"
-                )
+                (user.status === "En retard" && "#DB9A02") ||
+                (user.status === "Permissionnaire" && "orange")
               }">${user.status}</td> 
             </tr>
           </tbody>
