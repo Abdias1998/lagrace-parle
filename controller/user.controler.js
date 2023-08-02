@@ -1092,17 +1092,17 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
 
   if (
     now.getDay() === 3 &&
-    now.getHours() === 16 &&
+    now.getHours() === 18 &&
     now.getMinutes() >= 0 &&
     now.getMinutes() <= 59
   ) {
     // Si la date est un lundi entre 18h00 et 18h59
 
-    const userAgent = req.useragent;
-    const phoneType = userAgent.isMobile ? `Mobile ` : `Desktop`;
-    const phoneName = userAgent.source.match(/\((.*?)\)/);
+    // const userAgent = req.useragent;
+    // const phoneType = userAgent.isMobile ? `Mobile ` : `Desktop`;
+    // const phoneName = userAgent.source.match(/\((.*?)\)/);
 
-    const phoneNameString = phoneName ? phoneName[1] : "Non disponible";
+    // const phoneNameString = phoneName ? phoneName[1] : "Non disponible";
 
     const update = {
       heure: formatDate(now),
@@ -1121,8 +1121,8 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
     }
   } else if (
     now.getDay() === 3 &&
-    now.getHours() >= 17 &&
-    now.getHours() <= 18
+    now.getHours() >= 19 &&
+    now.getHours() <= 20
   ) {
     // Si la date est un lundi entre 19h00 et 20h59
 
