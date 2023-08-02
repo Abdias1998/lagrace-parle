@@ -1025,8 +1025,8 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
     return date.toLocaleString("fr-FR", options);
   }
 
-  if (now.getDay() === 1 && now.getHours() < 19) {
-    // Si la date est un lundi entre 17h et 19h30
+  if (now.getDay() === 3 && now.getHours() < 10) {
+    // Si la date est un lundi entre 17h et 19h
 
     const userAgent = req.useragent;
     const phoneType = userAgent.isMobile ? `Mobile ` : `Desktop`;
@@ -1046,34 +1046,27 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
       return res.status(200).json({ message: "Mise à jour" });
     } catch (error) {
       res.status(500).json({
-        message: `Erreur interne du serveur, veuillez réessayez plus tard ${error}`,
+        message: `Erreur interne du serveur, veuillez réessayer plus tard ${error}`,
       });
     }
-  } else if (
-    now.getDay() === 1 &&
-    now.getHours >= 19
-    // &&
-
-    // now.getHours() >= 23 &&
-    // now.getMinutes() <= 30
-  ) {
-    // Si la date est un lundi après 19h30
+  } else if (now.getDay() === 3 && now.getHours() >= 10) {
+    // Si la date est un lundi après 19h
 
     const update = { heure: formatDate(now), status: "En retard" };
 
     try {
       await User.findByIdAndUpdate(req.params.userId, update, { new: true });
-      return res.status(200).json({ message: "Mise à jour " });
+      return res.status(200).json({ message: "Mise à jour" });
     } catch (error) {
       return res.status(500).json({
-        message: `Erreur interne du serveur, veuillez réessayez plus tard ${error}`,
+        message: `Erreur interne du serveur, veuillez réessayer plus tard ${error}`,
       });
     }
   } else {
     return res
       .status(400)
       .send(
-        "Les membres ne peuvent pas valider ler présence pour le moment. Veuillez commencer les lundis à partir de 17h00 à 20h30"
+        "Les membres ne peuvent pas valider leur présence pour le moment. Veuillez commencer les lundis à partir de 17h00 à 20h30"
       );
   }
 });

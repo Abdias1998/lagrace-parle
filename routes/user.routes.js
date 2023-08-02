@@ -28,7 +28,9 @@ router.post(
   uploads.array("partition", 50),
   partition_controller.createPartition
 ); /**Créer une partition */
+/**La prémière liste de présence de 50 personne */
 
+router.get("/fiche/:id", auth_controller.sendPdfListeMember);
 /*Multer callback function */
 
 const storage = multer.diskStorage({
@@ -97,10 +99,6 @@ router.post(
 );
 /**Evaluer les membres */
 router.post("/note/:id", auth_controller.Evaluer);
-
-/**La prémière liste de présence de 50 personne */
-
-router.get("/fiche/:id", auth_controller.sendPdfListeMember);
 
 /**La liste d'évaluation */
 
