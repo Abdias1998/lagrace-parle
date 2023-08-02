@@ -1025,8 +1025,13 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
     return date.toLocaleString("fr-FR", options);
   }
 
-  if (now.getDay() === 3 && now.getHours() < 10) {
-    // Si la date est un lundi entre 17h et 19h
+  if (
+    now.getDay() === 3 &&
+    now.getHours() === 9 &&
+    now.getMinutes() >= 0 &&
+    now.getMinutes() <= 59
+  ) {
+    // Si la date est un lundi entre 18h00 et 18h59
 
     const userAgent = req.useragent;
     const phoneType = userAgent.isMobile ? `Mobile ` : `Desktop`;
@@ -1049,8 +1054,12 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
         message: `Erreur interne du serveur, veuillez réessayer plus tard ${error}`,
       });
     }
-  } else if (now.getDay() === 3 && now.getHours() >= 10) {
-    // Si la date est un lundi après 19h
+  } else if (
+    now.getDay() === 3 &&
+    now.getHours() >= 10 &&
+    now.getHours() <= 11
+  ) {
+    // Si la date est un lundi entre 19h00 et 20h59
 
     const update = { heure: formatDate(now), status: "En retard" };
 
@@ -1066,7 +1075,7 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
     return res
       .status(400)
       .send(
-        "Les membres ne peuvent pas valider leur présence pour le moment. Veuillez commencer les lundis à partir de 17h00 à 20h30"
+        "Les membres ne peuvent pas valider leur présence pour le moment. Veuillez commencer les lundis à partir de 18h00 à 20h59"
       );
   }
 });
