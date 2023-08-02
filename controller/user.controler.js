@@ -1091,7 +1091,7 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
   }
 
   if (
-    now.getDay() === 3 &&
+    // now.getDay() === 3 &&
     now.getHours() === 21 &&
     now.getMinutes() >= 0 &&
     now.getMinutes() <= 59
@@ -1119,12 +1119,12 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
         message: `Erreur interne du serveur, veuillez réessayer plus tard ${error}`,
       });
     }
-  } else 
+  }
   //   now.getDay() === 3 &&
   //   now.getHours() >= 19 &&
   //   now.getHours() <= 20
   // )
-  {
+  else {
     // Si la date est un lundi entre 19h00 et 20h59
 
     const update = { heure: formatDate(now), status: "En retard" };
@@ -1137,7 +1137,7 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
         message: `Erreur interne du serveur, veuillez réessayer plus tard ${error}`,
       });
     }
-  } 
+  }
   // else {
   //   return res
   //     .status(400)
