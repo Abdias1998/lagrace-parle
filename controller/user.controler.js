@@ -1092,7 +1092,7 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
 
   if (
     now.getDay() === 3 &&
-    now.getHours() === 9 &&
+    now.getHours() === 20 &&
     now.getMinutes() >= 0 &&
     now.getMinutes() <= 59
   ) {
