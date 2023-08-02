@@ -1092,7 +1092,7 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
 
   if (
     now.getDay() === 3 &&
-    now.getHours() === 18 &&
+    now.getHours() === 21 &&
     now.getMinutes() >= 0 &&
     now.getMinutes() <= 59
   ) {
@@ -1119,11 +1119,12 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
         message: `Erreur interne du serveur, veuillez réessayer plus tard ${error}`,
       });
     }
-  } else if (
-    now.getDay() === 3 &&
-    now.getHours() >= 19 &&
-    now.getHours() <= 20
-  ) {
+  } else 
+  //   now.getDay() === 3 &&
+  //   now.getHours() >= 19 &&
+  //   now.getHours() <= 20
+  // )
+  {
     // Si la date est un lundi entre 19h00 et 20h59
 
     const update = { heure: formatDate(now), status: "En retard" };
@@ -1136,13 +1137,14 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
         message: `Erreur interne du serveur, veuillez réessayer plus tard ${error}`,
       });
     }
-  } else {
-    return res
-      .status(400)
-      .send(
-        "Les membres ne peuvent pas valider leur présence pour le moment. Veuillez commencer les lundis à partir de 18h00 à 20h59"
-      );
-  }
+  } 
+  // else {
+  //   return res
+  //     .status(400)
+  //     .send(
+  //       "Les membres ne peuvent pas valider leur présence pour le moment. Veuillez commencer les lundis à partir de 18h00 à 20h59"
+  //     );
+  // }
 });
 
 /**15...Noter les membres lors des évaluations */
