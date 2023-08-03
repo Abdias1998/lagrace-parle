@@ -1063,6 +1063,7 @@ module.exports.permissionnaire = async_handler(async (req, res) => {
   const update = {
     status: "Permissionnaire",
     heure: "Not found",
+    nombrePermission: +1,
   };
   try {
     await User.findByIdAndUpdate(req.params.userId, update, { new: true });
@@ -1089,26 +1090,26 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
 
     return date.toLocaleString("fr-FR", options);
   }
+  const userAgent = req.useragent;
+  const phoneType = userAgent.isMobile ? `Mobile ` : `Desktop`;
+  const phoneName = userAgent.source.match(/\((.*?)\)/);
+
+  const phoneNameString = phoneName ? phoneName[1] : "Non disponible";
 
   if (
-    now.getDay() === 3 &&
-    now.getHours() === 20 &&
+    now.getDay() === 5 &&
+    now.getHours() === 18 &&
     now.getMinutes() >= 0 &&
     now.getMinutes() <= 59
   ) {
     // Si la date est un lundi entre 18h00 et 18h59
 
-    // const userAgent = req.useragent;
-    // const phoneType = userAgent.isMobile ? `Mobile ` : `Desktop`;
-    // const phoneName = userAgent.source.match(/\((.*?)\)/);
-
-    // const phoneNameString = phoneName ? phoneName[1] : "Non disponible";
-
     const update = {
       heure: formatDate(now),
       status: "A l'heure",
-      // phoneType: phoneType,
-      // phoneName: phoneNameString,
+      phoneType: phoneType,
+      phoneName: phoneNameString,
+      nombrePonctuelle: +1,
     };
 
     try {
@@ -1120,13 +1121,19 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
       });
     }
   } else if (
-    now.getDay() === 3 &&
-    now.getHours() >= 21 &&
-    now.getHours() <= 22
+    now.getDay() === 5 &&
+    now.getHours() >= 19 &&
+    now.getHours() <= 21
   ) {
     // Si la date est un lundi entre 19h00 et 20h59
 
-    const update = { heure: formatDate(now), status: "En retard" };
+    const update = {
+      heure: formatDate(now),
+      status: "En retard",
+      phoneType: phoneType,
+      phoneName: phoneNameString,
+      nombreRetard: +1,
+    };
 
     try {
       await User.findByIdAndUpdate(req.params.userId, update, { new: true });
@@ -1256,61 +1263,55 @@ module.exports.sendPdfListe = async_handler(async (req, res) => {
 });
 
 // module.exports.sendPdfListeMember = async_handler(async (req, res) => {
-//   // const now = new Date(); // Récupérez la date et l'heure actuelle
-//   // function formatDate(date) {
-//   //   const day = date.getDate().toString().padStart(2, "0");
-//   //   const month = (date.getMonth() + 1).toString().padStart(2, "0");
-//   //   const year = date.getFullYear().toString();
-
-//   //   return `${day}/${month}/${year}`;
-//   // }
-
 //   try {
 //     const users = await User.find(
 //       {},
 //       "names partition instrument identification isSuperAdmin"
-//     ); // Récupérer tous les utilisateurs avec leurs prénoms, noms, heures et statuts
+//     );
 
-//     // Créer un tableau HTML pour afficher tous les utilisateurs avec leurs prénoms, noms, heures et statuts
+//     // Filtrer les utilisateurs par propriété isSuperAdmin et isMember
+//     const filteredUsers = users.filter(
+//       (membre) => membre.isSuperAdmin === false || membre.isMember === true
+//     );
+
+//     // Trier les utilisateurs par ordre alphabétique des noms (proprieté 'names')
+//     const sortedUsers = filteredUsers.sort((a, b) =>
+//       a.names.localeCompare(b.names)
+//     );
+
+//     // Créer un tableau HTML pour afficher tous les utilisateurs triés par ordre alphabétique des noms
 //     let tableHTML = `
 //       <table style=" font-family: Arial, sans-serif; width: 210mm; border-collapse: collapse;">
 //         <thead>
 //           <tr style="background-color: #ECECEC; border-bottom: 1px solid #CCCCCC; text-align: center;">
-//       <th style="padding: 2px; border: 1px solid #CCCCCC;">Nom complet</th>
-//       <th style="padding: 2px; border: 1px solid #CCCCCC;">Partition</th>
-//       <th style="padding: 2px; border: 1px solid #CCCCCC;">Instrument</th>
-//       <th style="padding: 2px; border: 1px solid #CCCCCC;">code d'id</th>
-//     </tr>
+//             <th style="padding: 2px; border: 1px solid #CCCCCC;">Nom complet</th>
+//             <th style="padding: 2px; border: 1px solid #CCCCCC;">Partition</th>
+//             <th style="padding: 2px; border: 1px solid #CCCCCC;">Instrument</th>
+//             <th style="padding: 2px; border: 1px solid #CCCCCC;">Code d'id</th>
+//           </tr>
 //         </thead>
 //         <tbody>
 //     `;
 
-//     users
-//       .filter(
-//         (membre) => membre.isSuperAdmin === false || membre.isMember === true
-//       )
-//       // .slice(0, 80)
-//       .sort()
-//       .forEach((user) => {
-//         tableHTML += `
-//        <tbody>
-//     <tr style="border-bottom: 1px solid #CCCCCC;">
-//       <td style="padding: 2px; border: 1px solid #CCCCCC;">${user.names}</td>
-//       <td style="padding: 2px; border: 1px solid #CCCCCC;">${user.partition}</td>
-//       <td style="padding: 2px; border: 1px solid #CCCCCC;">${user.instrument}</td>
-//       <td style="padding: 2px; border: 1px solid #CCCCCC;">${user.identification}</td>
-
-//     </tr>
-//     </tbody>
-
+//     sortedUsers.forEach((user) => {
+//       tableHTML += `
+//         <tbody>
+//           <tr style="border-bottom: 1px solid #CCCCCC;">
+//             <td style="padding: 2px; border: 1px solid #CCCCCC;">${user.names}</td>
+//             <td style="padding: 2px; border: 1px solid #CCCCCC;">${user.partition}</td>
+//             <td style="padding: 2px; border: 1px solid #CCCCCC;">${user.instrument}</td>
+//             <td style="padding: 2px; border: 1px solid #CCCCCC;">${user.identification}</td>
+//           </tr>
+//         </tbody>
 //       `;
-//       });
+//     });
 
 //     tableHTML += `
-//         </tbody>
-//       </table>
+//       </tbody>
+//     </table>
+//   `;
 
-//     `;
+//     // ... (le reste du code reste inchangé) ...
 //     let user;
 //     user = await User.findOne({ _id: req.params.id });
 //     if (!user)
@@ -1337,12 +1338,11 @@ module.exports.sendPdfListe = async_handler(async (req, res) => {
 //     return res.status(500).json({ message: error });
 //   }
 // });
-
 module.exports.sendPdfListeMember = async_handler(async (req, res) => {
   try {
     const users = await User.find(
       {},
-      "names partition instrument identification isSuperAdmin"
+      "names nombreRetard nombrePonctuelle nombrePermission nombreAbsent isSuperAdmin"
     );
 
     // Filtrer les utilisateurs par propriété isSuperAdmin et isMember
@@ -1361,9 +1361,11 @@ module.exports.sendPdfListeMember = async_handler(async (req, res) => {
         <thead>
           <tr style="background-color: #ECECEC; border-bottom: 1px solid #CCCCCC; text-align: center;">
             <th style="padding: 2px; border: 1px solid #CCCCCC;">Nom complet</th>
-            <th style="padding: 2px; border: 1px solid #CCCCCC;">Partition</th>
-            <th style="padding: 2px; border: 1px solid #CCCCCC;">Instrument</th>
-            <th style="padding: 2px; border: 1px solid #CCCCCC;">Code d'id</th>
+            <th style="padding: 2px; border: 1px solid #CCCCCC;">A l'heure</th>
+            <th style="padding: 2px; border: 1px solid #CCCCCC;">Retard</th>
+            <th style="padding: 2px; border: 1px solid #CCCCCC;">Absent</th>
+            <th style="padding: 2px; border: 1px solid #CCCCCC;">Permission</th>
+            <th style="padding: 2px; border: 1px solid #CCCCCC;">Présent</th>
           </tr>
         </thead>
         <tbody>
@@ -1373,10 +1375,24 @@ module.exports.sendPdfListeMember = async_handler(async (req, res) => {
       tableHTML += `
         <tbody>
           <tr style="border-bottom: 1px solid #CCCCCC;">
-            <td style="padding: 2px; border: 1px solid #CCCCCC;">${user.names}</td>
-            <td style="padding: 2px; border: 1px solid #CCCCCC;">${user.partition}</td>
-            <td style="padding: 2px; border: 1px solid #CCCCCC;">${user.instrument}</td>
-            <td style="padding: 2px; border: 1px solid #CCCCCC;">${user.identification}</td>
+            <td style="padding: 2px; border: 1px solid #CCCCCC;">${
+              user.names
+            }</td>
+            <td style="color:green;padding: 2px; border: 1px solid #CCCCCC;">${
+              user?.nombrePonctuelle.length
+            }</td>
+            <td  style="color:red;padding: 2px; border: 1px solid #CCCCCC;">${
+              user?.nombreRetard.length
+            }</td>
+            <td style="color:red;padding: 2px; border: 1px solid #CCCCCC;">${
+              user?.nombreAbsent
+            }</td>
+            <td style="color:orange;padding: 2px; border: 1px solid #CCCCCC;">${
+              user?.nombrePermission
+            }</td>
+            <td style="color:green;padding: 2px; border: 1px solid #CCCCCC;">${
+              user?.nombreRetard.length + user?.nombrePonctuelle.length
+            }</td>
           </tr>
         </tbody>
       `;
@@ -1692,7 +1708,7 @@ module.exports.onResetAll = async_handler(async (req, res) => {
 module.exports.onReset = async_handler(async (req, res) => {
   User.updateMany(
     { status: { $in: ["", null] } }, //filtre pour sélectionner les utilisateurs avec isVerified vide ou null
-    { $set: { status: "Absent", heure: "Not found" } } //objet de mise à jour - ici on met le champ isVerified à 'Absent'
+    { $set: { status: "Absent", nombreAbsent: +1, heure: "Not found" } } //objet de mise à jour - ici on met le champ isVerified à 'Absent'
   )
     .then(() => {
       res.status(200).json({ message: "Mise à jour réussie" });

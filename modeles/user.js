@@ -142,7 +142,7 @@ const userSchema = mongoose.Schema(
       default: true,
     },
 
-    nombrePresent: {
+    nombrePermission: {
       type: Number,
       default: 0,
     },
