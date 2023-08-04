@@ -230,7 +230,7 @@ app.use("/api/exercices", ExerciceRoute);
 app.use("/api/picture", ImageRoute);
 const now = new Date();
 console.log(now.getHours());
-const User = require("./models/User"); // Assurez-vous que le chemin vers votre modèle User est correct
+const User = require("./modeles/user"); // Assurez-vous que le chemin vers votre modèle User est correct
 
 User.updateMany(
   {},
