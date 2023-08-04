@@ -230,6 +230,21 @@ app.use("/api/exercices", ExerciceRoute);
 app.use("/api/picture", ImageRoute);
 const now = new Date();
 console.log(now.getHours());
+const User = require("./models/User"); // Assurez-vous que le chemin vers votre modèle User est correct
+
+User.updateMany(
+  {},
+  {
+    $set: {
+      nombreRetard: 0,
+      nombreAbsent: 0,
+      nombrePermission: 0,
+      nombrePonctuelle: 0,
+    },
+  }
+);
+
+console.log("Mise a jour");
 app.listen(port || 7500, () =>
   console.log(`Le serveur est démarrer sur le port ${port}`)
 );
