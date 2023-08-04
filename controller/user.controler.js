@@ -1060,18 +1060,21 @@ module.exports.receiveTransaction = async_handler(async (req, res) => {
 }); //No unsed in the app web
 /**Permissonnaire */
 module.exports.permissionnaire = async_handler(async (req, res) => {
-  let user;
-  const userId = req.params.userId;
-  user = await User.findById({ _id: userId });
-  const permission = user.nombrePermission++;
   const update = {
     status: "Permissionnaire",
-    heure: "Not found",
-    nombrePermission: permission,
+    heure: "00",
   };
   try {
-    await User.findByIdAndUpdate(req.params.userId, update, { new: true });
-    return res.status(200).json({ message: "Mise a jour" });
+    await User.findByIdAndUpdate(
+      req.params.userId,
+      {
+        $inc: { nombrePermission: 1 }, // Incrémente le champ nombreRetard de 1
+        $set: update, // Met à jour les autres champs
+      },
+      { new: true }
+    );
+
+    return res.status(200).json({ message: "Mise à jour" });
   } catch (error) {
     res.status(500).json({
       message: `Erreur interne du serveur, veuillez réessayez plus tard ${error}`,
@@ -1081,9 +1084,7 @@ module.exports.permissionnaire = async_handler(async (req, res) => {
 /**14...Faire une liste de présence */
 module.exports.updateUserStatus = async_handler(async (req, res) => {
   const now = new Date(); // Récupérez la date et l'heure actuelle
-  let user;
-  const userId = req.params.userId;
-  user = await User.findById({ _id: userId });
+
   function formatDate(date) {
     const options = {
       timeZone: "Africa/Porto-Novo", // Fuseau horaire de l'Afrique de l'Ouest (Bénin)
@@ -1104,22 +1105,33 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
 
   if (
     now.getDay() === 5 &&
-    now.getHours() === 18 &&
+    now.getHours() === 20 &&
     now.getMinutes() >= 0 &&
     now.getMinutes() <= 59
   ) {
     // Si la date est un lundi entre 18h00 et 18h59
-    const ponctuelle = user.nombrePonctuelle++;
+
     const update = {
       heure: formatDate(now),
       status: "A l'heure",
       phoneType: phoneType,
       phoneName: phoneNameString,
-      nombrePonctuelle: ponctuelle,
     };
 
+    // try {
+    //   await User.findByIdAndUpdate(req.params.userId, update, { new: true });
+    //   return res.status(200).json({ message: "Mise à jour" });
+    // }
     try {
-      await User.findByIdAndUpdate(req.params.userId, update, { new: true });
+      await User.findByIdAndUpdate(
+        req.params.userId,
+        {
+          $inc: { nombrePonctuelle: 1 }, // Incrémente le champ nombreRetard de 1
+          $set: update, // Met à jour les autres champs
+        },
+        { new: true }
+      );
+
       return res.status(200).json({ message: "Mise à jour" });
     } catch (error) {
       res.status(500).json({
@@ -1128,21 +1140,32 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
     }
   } else if (
     now.getDay() === 5 &&
-    now.getHours() >= 19 &&
-    now.getHours() <= 21
+    now.getHours() >= 21 &&
+    now.getHours() <= 23
   ) {
     // Si la date est un lundi entre 19h00 et 20h59
-    const retard = user.nombreRetard++;
+
     const update = {
       heure: formatDate(now),
       status: "En retard",
       phoneType: phoneType,
       phoneName: phoneNameString,
-      nombreRetard: retard,
     };
 
+    // try {
+    //   await User.findByIdAndUpdate(req.params.userId, update, { new: true });
+    //   return res.status(200).json({ message: "Mise à jour" });
+    // }
     try {
-      await User.findByIdAndUpdate(req.params.userId, update, { new: true });
+      await User.findByIdAndUpdate(
+        req.params.userId,
+        {
+          $inc: { nombreRetard: 1 }, // Incrémente le champ nombreRetard de 1
+          $set: update, // Met à jour les autres champs
+        },
+        { new: true }
+      );
+
       return res.status(200).json({ message: "Mise à jour" });
     } catch (error) {
       return res.status(500).json({
@@ -1712,19 +1735,22 @@ module.exports.onResetAll = async_handler(async (req, res) => {
 });
 
 module.exports.onReset = async_handler(async (req, res) => {
-  User.updateMany(
-    { status: { $in: ["", null] } }, //filtre pour sélectionner les utilisateurs avec isVerified vide ou null
-    { $set: { status: "Absent", nombreAbsent: 1, heure: "Not found" } } //objet de mise à jour - ici on met le champ isVerified à 'Absent'
-  )
-    .then(() => {
-      res.status(200).json({ message: "Mise à jour réussie" });
-    })
-    .catch((err) => {
-      res.status(500).json({
-        message: "Erreur lors de la mise à jour des utilisateurs",
-        err,
-      });
+  try {
+    const updateResult = await User.updateMany(
+      { status: { $in: ["", null] } },
+      {
+        $set: { status: "Absent", heure: "00" },
+        $inc: { nombreAbsent: 1 }, // Incrémente le champ nombreAbsent de 1
+      }
+    );
+
+    res.status(200).json({ message: "Mise à jour réussie", updateResult });
+  } catch (err) {
+    res.status(500).json({
+      message: "Erreur lors de la mise à jour des utilisateurs",
+      error: err.message,
     });
+  }
 });
 
 module.exports.remeberEvenement = async_handler(async (req, res) => {
