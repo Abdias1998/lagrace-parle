@@ -1063,10 +1063,11 @@ module.exports.permissionnaire = async_handler(async (req, res) => {
   let user;
   const userId = req.params.userId;
   user = await User.findById({ _id: userId });
+  const permission = user.nombrePermission++;
   const update = {
     status: "Permissionnaire",
     heure: "Not found",
-    nombrePermission: user.nombrePermission++,
+    nombrePermission: permission,
   };
   try {
     await User.findByIdAndUpdate(req.params.userId, update, { new: true });
@@ -1108,13 +1109,13 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
     now.getMinutes() <= 59
   ) {
     // Si la date est un lundi entre 18h00 et 18h59
-
+    const ponctuelle = user.nombrePonctuelle++;
     const update = {
       heure: formatDate(now),
       status: "A l'heure",
       phoneType: phoneType,
       phoneName: phoneNameString,
-      nombrePonctuelle: user.nombrePonctuelle++,
+      nombrePonctuelle: ponctuelle,
     };
 
     try {
@@ -1131,13 +1132,13 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
     now.getHours() <= 21
   ) {
     // Si la date est un lundi entre 19h00 et 20h59
-
+    const retard = user.nombreRetard++;
     const update = {
       heure: formatDate(now),
       status: "En retard",
       phoneType: phoneType,
       phoneName: phoneNameString,
-      nombreRetard: user.nombreRetard++,
+      nombreRetard: retard,
     };
 
     try {
@@ -1713,7 +1714,7 @@ module.exports.onResetAll = async_handler(async (req, res) => {
 module.exports.onReset = async_handler(async (req, res) => {
   User.updateMany(
     { status: { $in: ["", null] } }, //filtre pour sélectionner les utilisateurs avec isVerified vide ou null
-    { $set: { status: "Absent", nombreAbsent: +1, heure: "Not found" } } //objet de mise à jour - ici on met le champ isVerified à 'Absent'
+    { $set: { status: "Absent", nombreAbsent: 1, heure: "Not found" } } //objet de mise à jour - ici on met le champ isVerified à 'Absent'
   )
     .then(() => {
       res.status(200).json({ message: "Mise à jour réussie" });
