@@ -1060,10 +1060,13 @@ module.exports.receiveTransaction = async_handler(async (req, res) => {
 }); //No unsed in the app web
 /**Permissonnaire */
 module.exports.permissionnaire = async_handler(async (req, res) => {
+  let user;
+  const userId = req.params.userId;
+  user = await User.findById({ _id: userId });
   const update = {
     status: "Permissionnaire",
     heure: "Not found",
-    nombrePermission: +1,
+    nombrePermission: user.nombrePermission++,
   };
   try {
     await User.findByIdAndUpdate(req.params.userId, update, { new: true });
@@ -1077,7 +1080,9 @@ module.exports.permissionnaire = async_handler(async (req, res) => {
 /**14...Faire une liste de présence */
 module.exports.updateUserStatus = async_handler(async (req, res) => {
   const now = new Date(); // Récupérez la date et l'heure actuelle
-
+  let user;
+  const userId = req.params.userId;
+  user = await User.findById({ _id: userId });
   function formatDate(date) {
     const options = {
       timeZone: "Africa/Porto-Novo", // Fuseau horaire de l'Afrique de l'Ouest (Bénin)
@@ -1109,7 +1114,7 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
       status: "A l'heure",
       phoneType: phoneType,
       phoneName: phoneNameString,
-      nombrePonctuelle: +1,
+      nombrePonctuelle: user.nombrePonctuelle++,
     };
 
     try {
@@ -1132,7 +1137,7 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
       status: "En retard",
       phoneType: phoneType,
       phoneName: phoneNameString,
-      nombreRetard: +1,
+      nombreRetard: user.nombreRetard++,
     };
 
     try {
@@ -1342,7 +1347,7 @@ module.exports.sendPdfListeMember = async_handler(async (req, res) => {
   try {
     const users = await User.find(
       {},
-      "names nombreRetard nombrePonctuelle nombrePermission nombreAbsent isSuperAdmin"
+      "names nombrePonctuelle nombreRetard nombreAbsent nombrePermission  isSuperAdmin"
     );
 
     // Filtrer les utilisateurs par propriété isSuperAdmin et isMember
@@ -1379,10 +1384,10 @@ module.exports.sendPdfListeMember = async_handler(async (req, res) => {
               user.names
             }</td>
             <td style="color:green;padding: 2px; border: 1px solid #CCCCCC;">${
-              user?.nombrePonctuelle.length
+              user?.nombrePonctuelle
             }</td>
             <td  style="color:red;padding: 2px; border: 1px solid #CCCCCC;">${
-              user?.nombreRetard.length
+              user?.nombreRetard
             }</td>
             <td style="color:red;padding: 2px; border: 1px solid #CCCCCC;">${
               user?.nombreAbsent
@@ -1391,7 +1396,7 @@ module.exports.sendPdfListeMember = async_handler(async (req, res) => {
               user?.nombrePermission
             }</td>
             <td style="color:green;padding: 2px; border: 1px solid #CCCCCC;">${
-              user?.nombreRetard.length + user?.nombrePonctuelle.length
+              user?.nombreRetard + user?.nombrePonctuelle
             }</td>
           </tr>
         </tbody>
