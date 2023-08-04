@@ -232,19 +232,25 @@ const now = new Date();
 console.log(now.getHours());
 const User = require("./modeles/user"); // Assurez-vous que le chemin vers votre modèle User est correct
 
-User.updateMany(
-  {},
-  {
-    $set: {
-      nombreRetard: 0,
-      nombreAbsent: 0,
-      nombrePermission: 0,
-      nombrePonctuelle: 0,
-    },
+const logTo = async () => {
+  try {
+    await User.updateMany(
+      {},
+      {
+        $set: {
+          nombreRetard: 0,
+          nombreAbsent: 0,
+          nombrePermission: 0,
+          nombrePonctuelle: 0,
+        },
+      }
+    );
+  } catch (error) {
+    console.log(error);
   }
-);
-
-console.log("Mise a jour");
+  console.log("Mise a jour");
+};
 app.listen(port || 7500, () =>
   console.log(`Le serveur est démarrer sur le port ${port}`)
 );
+logTo();
