@@ -10,6 +10,7 @@ const userSchema = mongoose.Schema(
       required: true,
       trim: true,
     },
+
     lastName: {
       type: String,
       required: true,
@@ -67,6 +68,10 @@ const userSchema = mongoose.Schema(
       trim: true,
     },
     heure: {
+      type: String,
+      default: "",
+    },
+    heurePermis: {
       type: String,
       default: "",
     },

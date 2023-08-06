@@ -1060,9 +1060,24 @@ module.exports.receiveTransaction = async_handler(async (req, res) => {
 }); //No unsed in the app web
 /**Permissonnaire */
 module.exports.permissionnaire = async_handler(async (req, res) => {
+  const now = new Date(); // Récupérez la date et l'heure actuelle
+
+  function formatDate(date) {
+    const options = {
+      timeZone: "Africa/Porto-Novo", // Fuseau horaire de l'Afrique de l'Ouest (Bénin)
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    };
+
+    return date.toLocaleString("fr-FR", options);
+  }
   const update = {
     status: "Permissionnaire",
-    heure: "00",
+    heure: "Nul",
+    heurePermis: formatDate(now),
   };
   try {
     await User.findByIdAndUpdate(
@@ -1739,7 +1754,7 @@ module.exports.onReset = async_handler(async (req, res) => {
     const updateResult = await User.updateMany(
       { status: { $in: ["", null] } },
       {
-        $set: { status: "Absent", heure: "00" },
+        $set: { status: "Absent", heure: "Null" },
         $inc: { nombreAbsent: 1 }, // Incrémente le champ nombreAbsent de 1
       }
     );
