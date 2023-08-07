@@ -1460,7 +1460,8 @@ module.exports.sendPdfListeMember = async_handler(async (req, res) => {
     const mailOptions = {
       from: `La Grâce Parle <${process.env.USER}>`,
       to: user.email,
-      subject: "Liste des éléments de la PhilHarmonie La Grâce Parle",
+      subject:
+        "Tableau de présence des éléments de la PhilHarmonie La Grâce Parle",
       html: tableHTML, // Ajouter le tableau HTML contenant tous les utilisateurs avec leurs prénoms, noms, heures et statuts dans le corps du message
     };
 
