@@ -24,7 +24,6 @@ const PDFDocument = require("pdfkit");
 const nodemailer = require("nodemailer");
 
 const path = require("path");
-const { totalmem } = require("os");
 // const { dateFormat } = require("../utils/date");
 
 // const { dateFormat } = require("../utils/date");
@@ -1121,7 +1120,7 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
 
   if (
     now.getDay() === 1 &&
-    now.getHours() === 17 &&
+    now.getHours() === 10 &&
     now.getMinutes() >= 0 &&
     now.getMinutes() <= 59
   ) {
@@ -1156,7 +1155,7 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
     }
   } else if (
     now.getDay() === 1 &&
-    now.getHours() >= 18 &&
+    now.getHours() >= 11 &&
     now.getHours() <= 22
   ) {
     // Si la date est un lundi entre 19h00 et 20h59
