@@ -24,6 +24,7 @@ const PDFDocument = require("pdfkit");
 const nodemailer = require("nodemailer");
 
 const path = require("path");
+const { totalmem } = require("os");
 // const { dateFormat } = require("../utils/date");
 
 // const { dateFormat } = require("../utils/date");
@@ -1119,8 +1120,8 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
   const phoneNameString = phoneName ? phoneName[1] : "Non disponible";
 
   if (
-    now.getDay() === 5 &&
-    now.getHours() === 20 &&
+    now.getDay() === 1 &&
+    now.getHours() === 17 &&
     now.getMinutes() >= 0 &&
     now.getMinutes() <= 59
   ) {
@@ -1154,9 +1155,9 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
       });
     }
   } else if (
-    now.getDay() === 5 &&
-    now.getHours() >= 21 &&
-    now.getHours() <= 23
+    now.getDay() === 1 &&
+    now.getHours() >= 18 &&
+    now.getHours() <= 22
   ) {
     // Si la date est un lundi entre 19h00 et 20h59
 
@@ -1383,25 +1384,36 @@ module.exports.sendPdfListe = async_handler(async (req, res) => {
 //   }
 // });
 module.exports.sendPdfListeMember = async_handler(async (req, res) => {
+  const now = new Date(); // Récupérez la date et l'heure actuelle
+
+  function formatDate(date) {
+    const options = {
+      timeZone: "Africa/Porto-Novo", // Fuseau horaire de l'Afrique de l'Ouest (Bénin)
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    };
+
+    return date.toLocaleString("fr-FR", options);
+  }
   try {
     const users = await User.find(
       {},
-      "names nombrePonctuelle nombreRetard nombreAbsent nombrePermission  isSuperAdmin"
+      "names nombrePonctuelle nombreRetard nombreAbsent nombrePermission isSuperAdmin"
     );
 
-    // Filtrer les utilisateurs par propriété isSuperAdmin et isMember
     const filteredUsers = users.filter(
       (membre) => membre.isSuperAdmin === false || membre.isMember === true
     );
 
-    // Trier les utilisateurs par ordre alphabétique des noms (proprieté 'names')
     const sortedUsers = filteredUsers.sort((a, b) =>
       a.names.localeCompare(b.names)
     );
 
-    // Créer un tableau HTML pour afficher tous les utilisateurs triés par ordre alphabétique des noms
     let tableHTML = `
-      <table style=" font-family: Arial, sans-serif; width: 210mm; border-collapse: collapse;">
+      <table style="font-family: Arial, sans-serif; width: 210mm; border-collapse: collapse;">
         <thead>
           <tr style="background-color: #ECECEC; border-bottom: 1px solid #CCCCCC; text-align: center;">
             <th style="padding: 2px; border: 1px solid #CCCCCC;">Nom complet</th>
@@ -1417,37 +1429,59 @@ module.exports.sendPdfListeMember = async_handler(async (req, res) => {
 
     sortedUsers.forEach((user) => {
       tableHTML += `
-        <tbody>
-          <tr style="border-bottom: 1px solid #CCCCCC;">
-            <td style="padding: 2px; border: 1px solid #CCCCCC;">${
-              user.names
-            }</td>
-            <td style="color:green;padding: 2px; border: 1px solid #CCCCCC;">${
-              user?.nombrePonctuelle
-            }</td>
-            <td  style="color:red;padding: 2px; border: 1px solid #CCCCCC;">${
-              user?.nombreRetard
-            }</td>
-            <td style="color:red;padding: 2px; border: 1px solid #CCCCCC;">${
-              user?.nombreAbsent
-            }</td>
-            <td style="color:orange;padding: 2px; border: 1px solid #CCCCCC;">${
-              user?.nombrePermission
-            }</td>
-            <td style="color:green;padding: 2px; border: 1px solid #CCCCCC;">${
-              user?.nombreRetard + user?.nombrePonctuelle
-            }</td>
-          </tr>
-        </tbody>
+        <tr style="border-bottom: 1px solid #CCCCCC;">
+          <td style="padding: 2px; border: 1px solid #CCCCCC;">${
+            user.names
+          }</td>
+          <td style="color:green;padding: 2px; border: 1px solid #CCCCCC;">${
+            user?.nombrePonctuelle
+          }</td>
+          <td style="color:red;padding: 2px; border: 1px solid #CCCCCC;">${
+            user?.nombreRetard
+          }</td>
+          <td style="color:red;padding: 2px; border: 1px solid #CCCCCC;">${
+            user?.nombreAbsent
+          }</td>
+          <td style="color:orange;padding: 2px; border: 1px solid #CCCCCC;">${
+            user?.nombrePermission
+          }</td>
+          <td style="color:green;padding: 2px; border: 1px solid #CCCCCC;">${
+            user?.nombreRetard + user?.nombrePonctuelle
+          }</td>
+        </tr>
       `;
     });
 
+    // Calcul du nombre total d'utilisateurs avec le statut "A l'heure" et "Retard"
+    const totalAALHeure = filteredUsers.reduce(
+      (total, user) => total + user.nombrePonctuelle,
+      0
+    );
+    const totalRetard = filteredUsers.reduce(
+      (total, user) => total + user.nombreRetard,
+      0
+    );
+    const totalAbsent = filteredUsers.reduce(
+      (total, user) => total + user.nombreAbsent,
+      0
+    );
+
     tableHTML += `
       </tbody>
+      <tfoot>
+
+
+
+
+        <tr>
+          <td colspan="6" style="text-align: center; font-weight: bold;">Pour la répétition du ${formatDate(
+            now
+          )}, ${totalAALHeure} sont venues à l'heure et  ${totalRetard} sont venues en retard et ${totalAbsent} sont absent sans aucune justification</td>
+        </tr>
+      </tfoot>
     </table>
   `;
 
-    // ... (le reste du code reste inchangé) ...
     let user;
     user = await User.findOne({ _id: req.params.id });
     if (!user)
@@ -1456,6 +1490,7 @@ module.exports.sendPdfListeMember = async_handler(async (req, res) => {
       });
     const mailOptions = {
       from: `La Grâce Parle <${process.env.USER}>`,
+
       to: user.email,
       subject: "Liste des éléments de la PhilHarmonie La Grâce Parle",
       html: tableHTML, // Ajouter le tableau HTML contenant tous les utilisateurs avec leurs prénoms, noms, heures et statuts dans le corps du message
