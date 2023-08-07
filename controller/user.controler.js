@@ -1229,7 +1229,15 @@ module.exports.sendPdfListe = async_handler(async (req, res) => {
       {},
       "names lastName instrument heure status isSuperAdmin " // Ajoutez la propriété 'nombreRetard' à la requête
     );
+    // Filtrer les utilisateurs par propriété isSuperAdmin et isMember
+    const filteredUsers = users.filter(
+      (membre) => membre.isSuperAdmin === false || membre.isMember === true
+    );
 
+    // Trier les utilisateurs par ordre alphabétique des noms (proprieté 'names')
+    const sortedUsers = filteredUsers.sort((a, b) =>
+      a.names.localeCompare(b.names)
+    );
     // Créer un tableau HTML pour afficher tous les utilisateurs avec leurs prénoms, noms, heures et statuts
     let tableHTML = `
       <table style=" font-family: Arial, sans-serif; width: 210mm; border-collapse: collapse;">
@@ -1244,13 +1252,8 @@ module.exports.sendPdfListe = async_handler(async (req, res) => {
         <tbody>
     `;
 
-    users
-      .filter(
-        (membre) => membre.isSuperAdmin === false || membre.isMember === true
-      )
-      .sort()
-      .forEach((user) => {
-        tableHTML += `
+    sortedUsers.forEach((user) => {
+      tableHTML += `
           <tbody>
             <tr style="border-bottom: 1px solid #CCCCCC;">
               <td style="padding: 2px; border: 1px solid #CCCCCC;">${
@@ -1271,7 +1274,7 @@ module.exports.sendPdfListe = async_handler(async (req, res) => {
             </tr>
           </tbody>
         `;
-      });
+    });
     tableHTML += `
         </tbody>
       </table>
