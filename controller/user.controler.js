@@ -1120,7 +1120,7 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
 
   if (
     now.getDay() === 1 &&
-    now.getHours() === 10 &&
+    now.getHours() === 9 &&
     now.getMinutes() >= 0 &&
     now.getMinutes() <= 59
   ) {
@@ -1155,7 +1155,7 @@ module.exports.updateUserStatus = async_handler(async (req, res) => {
     }
   } else if (
     now.getDay() === 1 &&
-    now.getHours() >= 11 &&
+    now.getHours() >= 10 &&
     now.getHours() <= 22
   ) {
     // Si la date est un lundi entre 19h00 et 20h59
